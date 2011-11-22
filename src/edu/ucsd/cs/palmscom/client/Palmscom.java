@@ -57,13 +57,15 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 	
 	@Override
 	public void onModuleLoad() {
-		// init new service handler
 		service = new PollingServiceHandler();
 		notifyStateMachine = new NotificationStateMachine(this);
 		
 		createUserInterface();		
 		getAppData(0);	
 		
+		// NOTE: until addMessageToConversationStream handles ordering
+		// of messages, subscribing at this point could lead to a race
+		// condition between operations in getAppData(1/2).
 		service.subscribe(this);
 	}	
 	
@@ -92,8 +94,8 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 		if(counter == 1) {
 			service.getOnlineUsers(new AsyncCallback<List<User>>() {				
 				@Override
-				public void onSuccess(List<User> result) {
-					updateUserList(result);
+				public void onSuccess(List<User> results) {
+					updateUserList(results);
 					getAppData(2);	
 				}
 				
@@ -332,5 +334,10 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 	public void onLiveMessages(List<Message> results) {
 		for(Message msg : results)
 			addMessageToConversationStream(msg);
+	}
+
+	@Override
+	public void onLiveOnlineUserList(List<User> results) {
+		updateUserList(results);		
 	}
 }

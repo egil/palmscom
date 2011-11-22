@@ -12,6 +12,10 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -28,12 +32,20 @@ import edu.ucsd.cs.palmscom.shared.User;
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
-public class Palmscom implements EntryPoint {
+public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceCallback {
 	private ClientServiceHandler service;
-	private FlexTable stream;
-	private ScrollPanel streamContainer;
+	private NotificationStateMachine notifyStateMachine;
+	private Dictionary settings;
+	
+	// Primary layout controls
 	private DockLayoutPanel layout;
+	private ScrollPanel streamContainer;
+	
+	// Header controls
 	private FlowPanel header;
+
+	// Conversation stream controls
+	private FlexTable stream;
 	
 	// "Input new-message" controls
 	private FlowPanel inputPanel;
@@ -47,15 +59,70 @@ public class Palmscom implements EntryPoint {
 	public void onModuleLoad() {
 		// init new service handler
 		service = new PollingServiceHandler();
+		notifyStateMachine = new NotificationStateMachine(this);
 		
-		createUserInterface();
+		createUserInterface();		
+		getAppData(0);	
 		
-		loadInitialData();
+		service.subscribe(this);
 	}	
 	
-	private void loadInitialData() {
-		// TODO Auto-generated method stub
+	private void getAppData(int counter) {
+		// We only want to load one item at the time
+		// to avoid blocking to many connections at the same time.
 		
+		// get user settings
+		if(counter == 0) {
+			service.getUserSettings(new AsyncCallback<Dictionary>() {				
+				@Override
+				public void onSuccess(Dictionary result) {
+					settings = result;
+					getAppData(1);					
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					GWT.log("ERROR (getUserSettings): " + caught.getMessage());
+				}
+			});
+			return;
+		}
+		
+		// get online users
+		if(counter == 1) {
+			service.getOnlineUsers(new AsyncCallback<List<User>>() {				
+				@Override
+				public void onSuccess(List<User> result) {
+					updateUserList(result);
+					getAppData(2);	
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					GWT.log("ERROR (getOnlineUsers): " + caught.getMessage());
+				}
+			});
+			return;
+		}
+		
+		if(counter == 2) {
+			service.getMessages(20, new AsyncCallback<List<Message>>() {				
+				@Override
+				public void onSuccess(List<Message> results) {
+					for(Message msg : results)
+						addMessageToConversationStream(msg);
+						
+					getAppData(3);	
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					GWT.log("ERROR (getOnlineUsers): " + caught.getMessage());
+				}
+			});			
+			return;			
+		}		
 	}
 
 	public void createUserInterface() {
@@ -115,7 +182,7 @@ public class Palmscom implements EntryPoint {
 		// new message to server
 		sendButton.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				doSendMessageWorkflow(event);				
+				sendMessageWorkflow(event);				
 			}
 		});
 		
@@ -124,7 +191,40 @@ public class Palmscom implements EntryPoint {
 		layout.addNorth(inputPanel, 50);
 	}
 	
-	private void doUpdateUserList(List<User> onlineUsers) {		
+	private void addMessageToConversationStream(Message msg) {
+		// Test if message already exists in stream
+		if(DOM.getElementById(msg.getHtmlID()) != null) {
+			GWT.log("WARNING: The message " + msg.getID() + " was retransmitted, already exists in the conversation stream.");
+			return;
+		}
+		
+		// Personalize message, add span tags around words,
+		// usernames, make links clickable, etc.
+		personalizeMessage(msg);
+		
+		// Insert message
+		// TODO: Search through the current conversation stream and find correct position for message. Setting row = 0 assumes message are added in the right order.
+		int row = 0;  
+		String time = DateTimeFormat.getFormat("h:mm:ss a").format(msg.getDate());		
+		stream.insertRow(row);
+		DOM.setElementAttribute(stream.getRowFormatter().getElement(row), "id", msg.getHtmlID());
+		stream.setText(row, 0, time);
+		stream.getCellFormatter().addStyleName(row, 0, "time");
+		stream.setText(row, 1, msg.getAuthor().getNickname());		
+		stream.getCellFormatter().addStyleName(row, 1, "user");
+		stream.setHTML(row, 2, msg.getText());
+		stream.getCellFormatter().addStyleName(row, 2, "message");
+		
+		// Trigger transition/notification
+		notifyStateMachine.onNewMessage(msg);
+	}
+	
+	private void personalizeMessage(Message msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void updateUserList(List<User> onlineUsers) {		
 		Element admins = Document.get().createULElement();		
 		Element supporters = Document.get().createULElement();
 		Element users = Document.get().createULElement();
@@ -147,7 +247,9 @@ public class Palmscom implements EntryPoint {
 					break;
 			}			
 		}
+		// remove existing user list
 		onlineUsersPanel.clear();
+		// add new user lists
 		onlineUsersPanel.getElement().appendChild(admins);
 		onlineUsersPanel.getElement().appendChild(supporters);
 		onlineUsersPanel.getElement().appendChild(users);		
@@ -165,38 +267,70 @@ public class Palmscom implements EntryPoint {
 	 *  e1. Show warning message: goto 6
 	 *  e2. Show error message: goto 6  
 	 */
-	private void doSendMessageWorkflow(ClickEvent event){		
+	private void sendMessageWorkflow(ClickEvent event){		
 		String msgtxt = inputText.getText().trim();
 		
 		// 2. Lock input, show sending indicator: goto 3
-		inputText.setEnabled(false);
-		sendButton.setEnabled(false);
-		// TODO: add sending indicator
-		
+		setSendMessageState();		
 		
 		// 3. Validate input: valid ? goto 4 : goto e1
-		if(!msgtxt.isEmpty()) {
+		if(msgtxt.isEmpty()) {
+			// TODO: Show warning message: goto 6
 			
-			// 4. Send to server: success ? goto 5 : goto e2
-			Message msg = new Message(msgtxt);
-			try {
-				service.sendMessage(msg);
-				
-				// 5. Clear input: goto 6
-				inputText.setText("");					
-			} catch (ServiceException e) {
-				// TODO: e2. Show error message: goto 6
-				GWT.log(e.getMessage());							
-			}
+			// 6. Unlock input, remove sending indicator, set focus to inputText: goto 1
+			setInputMessageState();
 			
-		} else {
-			// TODO: e1. Show warning message: goto 6			
+			return;
 		}
+			
+		// 4. Send to server: success ? goto 5 : goto e2
+		Message msg = new Message(msgtxt);
+		service.sendMessage(msg, new AsyncCallback<Void>() {					
+			@Override
+			public void onSuccess(Void result) {
+				GWT.log("INFO: Message saved succesfully.");
+
+				// 5. Clear input: goto 6
+				inputText.setText("");
 				
-		// 6. Unlock input, remove sending indicator, set focus to inputText: goto 1
+				// 6. Unlock input, remove sending indicator, set focus to inputText: goto 1
+				setInputMessageState();					
+			}				
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log(caught.getMessage());
+
+				// TODO: Show error message: goto 6
+				
+				// 6. Unlock input, remove sending indicator, set focus to inputText: goto 1
+				setInputMessageState();
+			}
+		});		
+	}
+
+	private void setInputMessageState() {
 		inputText.setEnabled(true);
 		sendButton.setEnabled(true);
-		// TODO: remove sending indicator
-		inputText.setFocus(true);		
+		// TODO: Remove sending indicator
+		inputText.setFocus(true);
+	}
+
+	private void setSendMessageState() {
+		inputText.setEnabled(false);
+		sendButton.setEnabled(false);
+		// TODO: Add sending indicator
+	}
+
+	@Override
+	public void onStateChange(NotifyState state) {
+		// TODO Create transition code
+		
+	}
+
+	@Override
+	public void onLiveMessages(List<Message> results) {
+		for(Message msg : results)
+			addMessageToConversationStream(msg);
 	}
 }

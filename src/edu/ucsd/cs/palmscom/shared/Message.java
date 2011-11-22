@@ -53,4 +53,8 @@ public class Message {
 	public void setIsMessageOfIntrest(Boolean isMessageOfIntrest) {
 		this.isMessageOfIntrest = isMessageOfIntrest;
 	}
+	
+	public String getHtmlID() {
+		return "id-" + this.getID();
+	}
 }

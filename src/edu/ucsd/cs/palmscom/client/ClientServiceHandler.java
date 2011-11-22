@@ -1,8 +1,10 @@
 package edu.ucsd.cs.palmscom.client;
 
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.List;
+
+import com.google.gwt.i18n.client.Dictionary;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.ServiceException;
@@ -12,9 +14,8 @@ public interface ClientServiceHandler {
 	/**
 	 * Sends a new message to the server
 	 * @param msg
-	 * @throws ServiceException
 	 */
-	public void sendMessage(Message msg) throws ServiceException;
+	public void sendMessage(Message msg, AsyncCallback<Void> callback);
 	
 	/**
 	 * Subscribes to new messages, etc., from the server
@@ -28,7 +29,7 @@ public interface ClientServiceHandler {
 	 * @param limit Maximum amount of message to download
 	 * @return
 	 */
-	public List<Message> getMessages(int limit);
+	public void getMessages(int limit, AsyncCallback<List<Message>> callback);
 	
 	/**
 	 * Get all messages from server that are newer
@@ -36,7 +37,7 @@ public interface ClientServiceHandler {
 	 * @param to Messages newer than this date
 	 * @return
 	 */
-	public List<Message> getMessages(Date to);
+	public void getMessages(Date to, AsyncCallback<List<Message>> callback);
 	
 	/**
 	 * Get messages from server that are in the 
@@ -44,32 +45,31 @@ public interface ClientServiceHandler {
 	 * @param to Messages newer than this date
 	 * @return
 	 */
-	public List<Message> getMessages(Date from, Date to);
+	public void getMessages(Date from, Date to, AsyncCallback<List<Message>> callback);
 	
 	/**
 	 * Get all messages that contains the query
 	 * @param query
 	 * @return
 	 */
-	public List<Message> search(String query);
+	public void search(String query, AsyncCallback<List<Message>> callback);
 	
 	/**
 	 * Get a list of all online users
 	 * @return
 	 */
-	public List<User> getOnlineUsers();
+	public void getOnlineUsers(AsyncCallback<List<User>> callback);
 	
 	/**
 	 * Get a dictionary of user settings associated
 	 * with the current logged in user.
 	 * @return
 	 */
-	public Dictionary<String, String> getUserSettings();
+	public void getUserSettings(AsyncCallback<Dictionary> callback);
 	
 	/**
 	 * Save the current user's settings.
 	 * @param settings
-	 * @throws ServiceException
 	 */
-	public void saveUserSettings(Dictionary<String, String> settings) throws ServiceException;
+	public void saveUserSettings(Dictionary settings, AsyncCallback<Void> callback);
 }

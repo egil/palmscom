@@ -1,0 +1,10 @@
+/test-classes
+/gwt-unitCache
+/build
+/classes
+/war/palmscom
+*.jar
+*.class
+*~
+*/web-app/gwt
+*/web-app/WEB-INF/classes

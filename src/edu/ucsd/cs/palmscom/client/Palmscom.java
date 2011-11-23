@@ -61,7 +61,7 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 		notifyStateMachine = new NotificationStateMachine(this);
 		
 		createUserInterface();		
-		getAppData(0);	
+		getAppData(1);
 		
 		// NOTE: until addMessageToConversationStream handles ordering
 		// of messages, subscribing at this point could lead to a race
@@ -74,21 +74,21 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 		// to avoid blocking to many connections at the same time.
 		
 		// get user settings
-		if(counter == 0) {
-			service.getUserSettings(new AsyncCallback<Dictionary>() {				
-				@Override
-				public void onSuccess(Dictionary result) {
-					settings = result;
-					getAppData(1);					
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					GWT.log("ERROR (getUserSettings): " + caught.getMessage());
-				}
-			});
-			return;
-		}
+//		if(counter == 0) {
+//			service.getUserSettings(new AsyncCallback<Dictionary>() {				
+//				@Override
+//				public void onSuccess(Dictionary result) {
+//					settings = result;
+//					getAppData(1);					
+//				}
+//				
+//				@Override
+//				public void onFailure(Throwable caught) {
+//					GWT.log("ERROR (getUserSettings): " + caught.getMessage());
+//				}
+//			});
+//			return;
+//		}		
 		
 		// get online users
 		if(counter == 1) {
@@ -101,6 +101,7 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 				
 				@Override
 				public void onFailure(Throwable caught) {
+					// TODO Show error message to user
 					GWT.log("ERROR (getOnlineUsers): " + caught.getMessage());
 				}
 			});
@@ -119,7 +120,7 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
+					// TODO Show error message to user
 					GWT.log("ERROR (getOnlineUsers): " + caught.getMessage());
 				}
 			});			
@@ -210,6 +211,8 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 		String time = DateTimeFormat.getFormat("h:mm:ss a").format(msg.getDate());		
 		stream.insertRow(row);
 		DOM.setElementAttribute(stream.getRowFormatter().getElement(row), "id", msg.getHtmlID());
+		
+		if(msg.getIsMessageOfIntrest()) stream.getRowFormatter().addStyleName(row, "moi");
 		stream.setText(row, 0, time);
 		stream.getCellFormatter().addStyleName(row, 0, "time");
 		stream.setText(row, 1, msg.getAuthor().getNickname());		
@@ -286,7 +289,8 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 		}
 			
 		// 4. Send to server: success ? goto 5 : goto e2
-		Message msg = new Message(msgtxt);
+		Message msg = new Message();
+		msg.setText(msgtxt);
 		service.sendMessage(msg, new AsyncCallback<Void>() {					
 			@Override
 			public void onSuccess(Void result) {
@@ -331,7 +335,7 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 	}
 
 	@Override
-	public void onLiveMessages(List<Message> results) {
+	public void onLiveMessages(List<Message> results) {		
 		for(Message msg : results)
 			addMessageToConversationStream(msg);
 	}

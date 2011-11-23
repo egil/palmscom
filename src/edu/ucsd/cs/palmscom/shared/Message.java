@@ -1,15 +1,18 @@
 package edu.ucsd.cs.palmscom.shared;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Message {
+public class Message implements Serializable {
+	private static final long serialVersionUID = -1137037623524123720L;
 	private int ID;
 	private String text;
 	private Date date;
 	private User author;
-	private Boolean isMessageOfIntrest;
+	private Boolean isMessageOfIntrest = false;
 		
 	public Message(){ }
+
 	public Message(String text) {
 		this.setText(text);
 	}

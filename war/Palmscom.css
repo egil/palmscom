@@ -1,0 +1,93 @@
+::-webkit-scrollbar {
+  width: 6px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #eee;
+  background: #eee; /*rgba(221, 221, 221, .8);*/ 
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: #eee;
+  /*background: rgba(221, 221, 221, 0.4);*/ 
+}
+
+.container {  
+  width: 300px;
+  margin: 10px;
+}
+
+/**
+ * CreateMessageWidget styles
+ */
+.create-message {
+  border: 1px solid #eee; 
+  border-bottom: 3px solid #eee;
+  padding: 10px 10px;  
+}
+
+.create-message .textInput {
+  border: 1px solid #eee;
+  padding: 4px;
+  width: 224px;
+}
+
+.create-message .textInput:focus {
+  outline: none;  
+}
+
+.create-message .textInput-watermark {
+  color: #666;
+  font-style: italic;  
+  width: 264px;
+}
+
+/**
+ * OnlineUsersWidget styles
+ */
+.online-users {
+  border: 1px solid #eee; 
+  border-top: 3px solid #eee;
+  color: #666;
+  font-size: 10px;
+  line-height: 26px;
+  text-align: center;
+}
+
+/**
+ * Conversation stream styles
+ */
+
+.stream {
+  margin: 5px 10px;
+  font-family: sans-serif;
+}
+
+.stream td {
+  font-size: 12px;
+}
+
+.stream .time, .stream .author, .stream .reply {
+  color: #777;
+  font-size: 11px; 
+  white-space: nowrap;
+}
+
+.stream .author {
+  font-weight: bold;
+}
+
+.author {
+  padding-left: 10px;
+  width: 100%;
+}
+
+.message {
+  padding-bottom: 10px;
+}
+

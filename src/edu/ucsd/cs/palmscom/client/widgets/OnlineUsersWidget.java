@@ -16,6 +16,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
 import edu.ucsd.cs.palmscom.client.ClientServiceHandler;
+import edu.ucsd.cs.palmscom.client.Collapsible;
+import edu.ucsd.cs.palmscom.client.VisualStateChangeEvent;
+import edu.ucsd.cs.palmscom.client.VisualStateChangeHandler;
+import edu.ucsd.cs.palmscom.client.VisualStateType;
 import edu.ucsd.cs.palmscom.shared.User;
 
 public class OnlineUsersWidget extends Composite implements Collapsible {

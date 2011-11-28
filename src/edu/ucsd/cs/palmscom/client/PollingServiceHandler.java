@@ -38,44 +38,44 @@ public class PollingServiceHandler implements ClientServiceHandler {
 		});		
 	}
 
-	@Override
-	public void subscribe(final ClientServiceCallback callback) {		
-		lastRefresh = new Date();
-		refreshMsgs = new Timer() {			
-			@Override
-			public void run() {
-				svc.getMessages(lastRefresh, new AsyncCallback<List<Message>>() {
-					
-					@Override
-					public void onSuccess(List<Message> result) {
-						//GWT.log("SUCCESS: subscribe -> getMessages(" + lastRefresh.toString() + ")");
-						if(result.size() > 0) { 
-							GWT.log("SUCCESS: subscribe -> new messages(" + result.size() + ")");
-							// set lastRefresh to newest message
-							lastRefresh = result.get(result.size() - 1).getDate();
-
-							// tell subscriber about new messages
-							callback.onLiveMessages(result);
-						}
-						
-						// look updates in 1 sec
-						refreshMsgs.schedule(1000);
-					}
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						GWT.log("Failure: subscribe -> getMessages(" + lastRefresh.toString() + "). " + caught.getMessage());
-
-						// look updates in 1 sec
-						refreshMsgs.schedule(1000);
-					}					
-				});
-			}
-		};
-				
-		// look updates in 1 sec
-		refreshMsgs.schedule(1000);
-	}
+//	@Override
+//	public void subscribe(final ClientServiceCallback callback) {		
+//		lastRefresh = new Date();
+//		refreshMsgs = new Timer() {			
+//			@Override
+//			public void run() {
+//				svc.getMessages(lastRefresh, new AsyncCallback<List<Message>>() {
+//					
+//					@Override
+//					public void onSuccess(List<Message> result) {
+//						//GWT.log("SUCCESS: subscribe -> getMessages(" + lastRefresh.toString() + ")");
+//						if(result.size() > 0) { 
+//							GWT.log("SUCCESS: subscribe -> new messages(" + result.size() + ")");
+//							// set lastRefresh to newest message
+//							lastRefresh = result.get(result.size() - 1).getDate();
+//
+//							// tell subscriber about new messages
+//							callback.onLiveMessages(result);
+//						}
+//						
+//						// look updates in 1 sec
+//						refreshMsgs.schedule(1000);
+//					}
+//					
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						GWT.log("Failure: subscribe -> getMessages(" + lastRefresh.toString() + "). " + caught.getMessage());
+//
+//						// look updates in 1 sec
+//						refreshMsgs.schedule(1000);
+//					}					
+//				});
+//			}
+//		};
+//				
+//		// look updates in 1 sec
+//		refreshMsgs.schedule(1000);
+//	}
 
 	@Override
 	public void getMessages(int limit, final AsyncCallback<List<Message>> callback) {
@@ -145,6 +145,20 @@ public class PollingServiceHandler implements ClientServiceHandler {
 			}			
 		});		
 	}
+
+	@Override
+	public void addNewDataHandler(NewMessagesHandler newDataHandler) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addOnlineUsersChangeHandler(
+			OnlineUsersChangeHandler onlineUsersChangeHandler) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 //	@Override
 //	public void getUserSettings(final AsyncCallback<Dictionary> callback) {

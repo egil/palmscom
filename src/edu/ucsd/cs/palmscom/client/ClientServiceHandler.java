@@ -4,10 +4,6 @@ import edu.ucsd.cs.palmscom.shared.PalmscomServiceAsync;
 
 public interface ClientServiceHandler extends PalmscomServiceAsync {
 		
-	/**
-	 * Subscribes to new messages, etc., from the server
-	 * @param callback
-	 */
-	public void subscribe(ClientServiceCallback callback);
-	
+	public void addNewDataHandler(NewMessagesHandler newDataHandler);
+	public void addOnlineUsersChangeHandler(OnlineUsersChangeHandler onlineUsersChangeHandler);
 }

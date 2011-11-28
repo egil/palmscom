@@ -17,6 +17,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 import edu.ucsd.cs.palmscom.client.ClientServiceHandler;
+import edu.ucsd.cs.palmscom.client.Collapsible;
+import edu.ucsd.cs.palmscom.client.VisualStateChangeEvent;
+import edu.ucsd.cs.palmscom.client.VisualStateChangeHandler;
+import edu.ucsd.cs.palmscom.client.VisualStateType;
 import edu.ucsd.cs.palmscom.shared.Message;
 
 public class CreateMessageWidget extends Composite implements Collapsible {
@@ -34,7 +38,7 @@ public class CreateMessageWidget extends Composite implements Collapsible {
 		this.svc = svc;
 		
 		// Sets the widget to be wrapped by the composite. 		
-		initWidget(panel);						
+		initWidget(panel);					
 		
 		// configure panel
 		panel.setStylePrimaryName("create-message");

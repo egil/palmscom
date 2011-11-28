@@ -20,6 +20,9 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 
 import edu.ucsd.cs.palmscom.client.widgets.CreateMessageWidget;
 import edu.ucsd.cs.palmscom.client.widgets.OnlineUsersWidget;
+import edu.ucsd.cs.palmscom.client.widgets.StateChangeEvent;
+import edu.ucsd.cs.palmscom.client.widgets.StateChangeHandler;
+import edu.ucsd.cs.palmscom.client.widgets.StateChangeType;
 import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.User;
 
@@ -105,8 +108,19 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 		//createHeaderUI();
 		
 		// http://stackoverflow.com/questions/3190577/resizing-a-gwt-docklayoutpanels-north-south-east-west-components
-		CreateMessageWidget cmw = new CreateMessageWidget(service);
-		layout.addNorth(cmw, 52);
+		final CreateMessageWidget cmw = new CreateMessageWidget(service);
+		// set collapsed size initially
+		layout.addNorth(cmw, CreateMessageWidget.COLLAPSED_SIZE);
+		// set up handler for updating the size of the CMW widget
+		cmw.addStateChangeHandler(new StateChangeHandler() {			
+			@Override
+			public void onStateChange(StateChangeEvent event) {
+				if(event.getState() == StateChangeType.COLLAPSED)
+					layout.setWidgetSize(cmw, CreateMessageWidget.COLLAPSED_SIZE);
+				else
+					layout.setWidgetSize(cmw, CreateMessageWidget.EXPANDED_SIZE);
+			}
+		});		
 		
 		// create footer/show list of online users panel
 		OnlineUsersWidget ouw = new OnlineUsersWidget(service);

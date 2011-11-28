@@ -60,7 +60,4 @@ public class NotificationStateMachine {
 		state = NotifyState.ACTIVE;
 		callback.onStateChange(state);
 	}
-	
 }
-
-

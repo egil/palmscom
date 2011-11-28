@@ -10,20 +10,24 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
-
 import edu.ucsd.cs.palmscom.client.ClientServiceHandler;
 import edu.ucsd.cs.palmscom.shared.Message;
 
 public class CreateMessageWidget extends Composite {
+	private final HandlerManager handlerManager = new HandlerManager(this);
 	private final FlowPanel panel = new FlowPanel();
-	private final WatermarkTextBox text = new WatermarkTextBox();
+	private final WatermarkTextArea text = new WatermarkTextArea();
 	private final Button button = new Button("Send");		
 	private final ClientServiceHandler svc;
+	
+	public static final double COLLAPSED_SIZE = 54;
+	public static final double EXPANDED_SIZE = 90;	
 	
 	public CreateMessageWidget(ClientServiceHandler svc) {
 		this.svc = svc;
@@ -36,6 +40,7 @@ public class CreateMessageWidget extends Composite {
 
 		// configure textbox
 		text.setWatermark("Click here to ask a question . . ."); 
+		//text.setVisibleLines(1);		
 		
 		// configure button
 		button.setVisible(false);
@@ -67,6 +72,8 @@ public class CreateMessageWidget extends Composite {
 			@Override
 			public void onFocus(FocusEvent event) {
 				button.setVisible(true);
+				//text.setVisibleLines(3);
+				handlerManager.fireEvent(new StateChangeEvent(StateChangeType.EXPANDED));
 			}
 		});
 		
@@ -74,8 +81,11 @@ public class CreateMessageWidget extends Composite {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				if(text.getText().isEmpty())
+				if(text.getText().isEmpty()) {
 					button.setVisible(false);
+					//text.setVisibleLines(1);
+					handlerManager.fireEvent(new StateChangeEvent(StateChangeType.COLLAPSED));
+				}
 			}
 		});
 				
@@ -154,6 +164,10 @@ public class CreateMessageWidget extends Composite {
 		text.setEnabled(false);
 		button.setEnabled(false);
 		// TODO: Add sending indicator
+	}
+	
+	public void addStateChangeHandler(StateChangeHandler handler) {
+		handlerManager.addHandler(StateChangeEvent.getType(), handler);  
 	}
 }
 

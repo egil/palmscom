@@ -31,10 +31,19 @@
   padding: 10px 10px;  
 }
 
-.create-message .textInput {
+.create-message .gwt-Button {
+  display: block;
+  float: right;
+  margin-top: 2px;
+}
+
+.create-message .textInput {  
   border: 1px solid #eee;
+  display: block;
+  float: left;
   padding: 4px;
   width: 224px;
+  height: 55px;
 }
 
 .create-message .textInput:focus {
@@ -45,6 +54,13 @@
   color: #666;
   font-style: italic;  
   width: 264px;
+  height: 20px;
+}
+
+.create-message textarea {
+  font-family: Arial Unicode MS, Arial, sans-serif;
+  overflow: hidden;
+  resize: none;
 }
 
 /**

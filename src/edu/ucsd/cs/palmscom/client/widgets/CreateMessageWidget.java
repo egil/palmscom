@@ -19,15 +19,16 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import edu.ucsd.cs.palmscom.client.ClientServiceHandler;
 import edu.ucsd.cs.palmscom.shared.Message;
 
-public class CreateMessageWidget extends Composite {
+public class CreateMessageWidget extends Composite implements Collapsible {
+	private static final double COLLAPSED_SIZE = 53;
+	private static final double EXPANDED_SIZE = 90;	
+	private VisualStateType state = VisualStateType.COLLAPSED;
+	
 	private final HandlerManager handlerManager = new HandlerManager(this);
 	private final FlowPanel panel = new FlowPanel();
 	private final WatermarkTextArea text = new WatermarkTextArea();
 	private final Button button = new Button("Send");		
-	private final ClientServiceHandler svc;
-	
-	public static final double COLLAPSED_SIZE = 54;
-	public static final double EXPANDED_SIZE = 90;	
+	private final ClientServiceHandler svc;	
 	
 	public CreateMessageWidget(ClientServiceHandler svc) {
 		this.svc = svc;
@@ -39,8 +40,7 @@ public class CreateMessageWidget extends Composite {
 		panel.setStylePrimaryName("create-message");
 
 		// configure textbox
-		text.setWatermark("Click here to ask a question . . ."); 
-		//text.setVisibleLines(1);		
+		text.setWatermark("Click here to ask a question . . .");	
 		
 		// configure button
 		button.setVisible(false);
@@ -72,19 +72,18 @@ public class CreateMessageWidget extends Composite {
 			@Override
 			public void onFocus(FocusEvent event) {
 				button.setVisible(true);
-				//text.setVisibleLines(3);
-				handlerManager.fireEvent(new StateChangeEvent(StateChangeType.EXPANDED));
+				state = VisualStateType.EXPANDED;
+				handlerManager.fireEvent(new VisualStateChangeEvent(state));
 			}
 		});
 		
-		text.addBlurHandler(new BlurHandler() {
-			
+		text.addBlurHandler(new BlurHandler() {			
 			@Override
 			public void onBlur(BlurEvent event) {
 				if(text.getText().isEmpty()) {
 					button.setVisible(false);
-					//text.setVisibleLines(1);
-					handlerManager.fireEvent(new StateChangeEvent(StateChangeType.COLLAPSED));
+					state = VisualStateType.COLLAPSED;
+					handlerManager.fireEvent(new VisualStateChangeEvent(state));
 				}
 			}
 		});
@@ -166,8 +165,18 @@ public class CreateMessageWidget extends Composite {
 		// TODO: Add sending indicator
 	}
 	
-	public void addStateChangeHandler(StateChangeHandler handler) {
-		handlerManager.addHandler(StateChangeEvent.getType(), handler);  
+	public void addStateChangeHandler(VisualStateChangeHandler handler) {
+		handlerManager.addHandler(VisualStateChangeEvent.getType(), handler);  
+	}
+	
+	@Override
+	public double getHeight() {
+		return state == VisualStateType.COLLAPSED ? COLLAPSED_SIZE : EXPANDED_SIZE;
+	}
+
+	@Override
+	public double getWidth() {
+		return 0;
 	}
 }
 

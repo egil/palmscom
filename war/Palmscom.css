@@ -34,7 +34,7 @@
 .create-message .gwt-Button {
   display: block;
   float: right;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .create-message .textInput {  
@@ -70,9 +70,21 @@
   border: 1px solid #eee; 
   border-top: 3px solid #eee;
   color: #666;
+  cursor: pointer;
   font-size: 10px;
   line-height: 26px;
   text-align: center;
+}
+
+.online-users:focus {
+  outline: none;
+}
+
+.online-users ul {
+  text-align: left;
+  line-height: 16px;
+  margin: 0 10px 0 25px;
+  padding: 0;
 }
 
 /**

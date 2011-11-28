@@ -20,9 +20,9 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 
 import edu.ucsd.cs.palmscom.client.widgets.CreateMessageWidget;
 import edu.ucsd.cs.palmscom.client.widgets.OnlineUsersWidget;
-import edu.ucsd.cs.palmscom.client.widgets.StateChangeEvent;
-import edu.ucsd.cs.palmscom.client.widgets.StateChangeHandler;
-import edu.ucsd.cs.palmscom.client.widgets.StateChangeType;
+import edu.ucsd.cs.palmscom.client.widgets.VisualStateChangeEvent;
+import edu.ucsd.cs.palmscom.client.widgets.VisualStateChangeHandler;
+import edu.ucsd.cs.palmscom.client.widgets.VisualStateType;
 import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.User;
 
@@ -110,21 +110,24 @@ public class Palmscom implements EntryPoint, StateChangeCallback, ClientServiceC
 		// http://stackoverflow.com/questions/3190577/resizing-a-gwt-docklayoutpanels-north-south-east-west-components
 		final CreateMessageWidget cmw = new CreateMessageWidget(service);
 		// set collapsed size initially
-		layout.addNorth(cmw, CreateMessageWidget.COLLAPSED_SIZE);
+		layout.addNorth(cmw, cmw.getHeight());
 		// set up handler for updating the size of the CMW widget
-		cmw.addStateChangeHandler(new StateChangeHandler() {			
+		cmw.addStateChangeHandler(new VisualStateChangeHandler() {			
 			@Override
-			public void onStateChange(StateChangeEvent event) {
-				if(event.getState() == StateChangeType.COLLAPSED)
-					layout.setWidgetSize(cmw, CreateMessageWidget.COLLAPSED_SIZE);
-				else
-					layout.setWidgetSize(cmw, CreateMessageWidget.EXPANDED_SIZE);
+			public void onStateChange(VisualStateChangeEvent event) {				
+				layout.setWidgetSize(cmw, cmw.getHeight());
 			}
 		});		
 		
 		// create footer/show list of online users panel
-		OnlineUsersWidget ouw = new OnlineUsersWidget(service);
-		layout.addSouth(ouw, 30);
+		final OnlineUsersWidget ouw = new OnlineUsersWidget(service);
+		layout.addSouth(ouw, ouw.getHeight());
+		ouw.addStateChangeHandler(new VisualStateChangeHandler() {			
+			@Override
+			public void onStateChange(VisualStateChangeEvent event) {
+				layout.setWidgetSize(ouw, ouw.getHeight());
+			}
+		});
 
 		// create the conversation stream
 		streamContainer = new ScrollPanel();

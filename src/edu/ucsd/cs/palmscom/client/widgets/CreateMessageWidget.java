@@ -156,6 +156,16 @@ public class CreateMessageWidget extends Composite implements Collapsible {
 		});		
 	}
 	
+	public String getText() {
+		return text.getText();
+	}
+	
+	public void setText(String value) {
+		text.setText(value);
+		text.setFocus(true);
+		text.setCursorPos(value.length());
+	}
+	
 	private void setInputMessageState() {
 		text.setEnabled(true);
 		button.setEnabled(true);

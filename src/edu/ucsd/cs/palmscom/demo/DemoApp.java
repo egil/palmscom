@@ -7,10 +7,13 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.LayoutPanel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
+import edu.ucsd.cs.palmscom.client.widgets.PalmscomWidget;
+
 public class DemoApp implements EntryPoint {
 	final LayoutPanel layout = new LayoutPanel();
 	final FlowPanel panel = new FlowPanel();
 	final HTML text = new HTML();
+	final PalmscomWidget pcw = new PalmscomWidget();
 	
 	@Override
 	public void onModuleLoad() {
@@ -25,7 +28,9 @@ public class DemoApp implements EntryPoint {
 		panel.setStylePrimaryName("main");		
 		panel.add(text);		
 		layout.add(panel);
-		layout.setWidgetLeftRight(panel, 0, Unit.PX, 300, Unit.PX);
+		layout.add(pcw);
+		layout.setWidgetLeftRight(panel, 0, Unit.PX, 320, Unit.PX);
+		layout.setWidgetRightWidth(pcw, 0, Unit.PX, 320, Unit.PX);
 		RootLayoutPanel.get().add(layout);	
 	}
 

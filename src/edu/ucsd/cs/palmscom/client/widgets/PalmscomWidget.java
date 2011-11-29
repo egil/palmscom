@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -12,7 +14,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
 import edu.ucsd.cs.palmscom.client.ClientServiceHandler;
@@ -27,12 +29,11 @@ import edu.ucsd.cs.palmscom.client.PollingServiceHandler;
 import edu.ucsd.cs.palmscom.client.VisualStateChangeEvent;
 import edu.ucsd.cs.palmscom.client.VisualStateChangeHandler;
 import edu.ucsd.cs.palmscom.shared.Message;
-import edu.ucsd.cs.palmscom.shared.User;
 
 public class PalmscomWidget extends Composite implements Collapsible {
-
 	private ClientServiceHandler service;
 	private NotificationStateMachine notifyStateMachine;
+	private CreateMessageWidget cmw;
 	
 	// Primary layout controls
 	private final DockLayoutPanel layout = new DockLayoutPanel(Unit.PX);
@@ -53,7 +54,7 @@ public class PalmscomWidget extends Composite implements Collapsible {
 			public void onStateChange(NotifyStateEvent event) {
 				transitionToState(event.getState());
 			}
-		});	
+		});
 		
 		service = new PollingServiceHandler();
 		service.addNewDataHandler(new NewMessagesHandler() {						
@@ -63,6 +64,8 @@ public class PalmscomWidget extends Composite implements Collapsible {
 					addMessageToConversationStream(msg);
 			}
 		});
+		
+		cmw = new CreateMessageWidget(service);
 		
 		createUserInterface();		
 		getAppData(2);		
@@ -114,10 +117,8 @@ public class PalmscomWidget extends Composite implements Collapsible {
 		layout.setStylePrimaryName("container");		
 		
 		// create header
-		//createHeaderUI();
+		createHeaderUI();
 		
-		// http://stackoverflow.com/questions/3190577/resizing-a-gwt-docklayoutpanels-north-south-east-west-components
-		final CreateMessageWidget cmw = new CreateMessageWidget(service);
 		// set collapsed size initially
 		layout.addNorth(cmw, cmw.getHeight());
 		// set up handler for updating the size of the CMW widget
@@ -146,17 +147,17 @@ public class PalmscomWidget extends Composite implements Collapsible {
 		layout.add(streamContainer);
 		
 		// add everything to the main root layout panel
-		RootLayoutPanel.get().add(layout);
+		//RootLayoutPanel.get().add(layout);
 	}
 
 	private void createHeaderUI() {
 		header = new FlowPanel();
-		header.setStylePrimaryName("input");
-		header.add(new HTML("<h1>PALMS Communicator</h1>"));
-		layout.addNorth(header, 50);
+		header.setStylePrimaryName("header");
+		header.add(new HTML("<h1>PALMSCom</h1>"));
+		layout.addNorth(header, 33);
 	}
-
-	private void addMessageToConversationStream(Message msg) {
+	
+	private void addMessageToConversationStream(final Message msg) {
 		// Test if message already exists in stream
 		if(DOM.getElementById(msg.getHtmlID()) != null) {
 			GWT.log("WARNING: The message " + msg.getID() + " was retransmitted, already exists in the conversation stream.");
@@ -182,7 +183,16 @@ public class PalmscomWidget extends Composite implements Collapsible {
 		stream.getCellFormatter().addStyleName(rowHead, 0, "time");
 		stream.setText(rowHead, 1, msg.getAuthor().getNickname());		
 		stream.getCellFormatter().addStyleName(rowHead, 1, "author");
-		stream.setText(rowHead, 2, "reply");		
+		Hyperlink replyLink = new Hyperlink();
+		replyLink.setText("reply");
+		replyLink.addClickHandler(new ClickHandler() {			
+			@Override
+			public void onClick(ClickEvent event) {
+				cmw.setText(msg.getAuthor().getNickname() + ": ");
+			}
+		});
+		
+		stream.setWidget(rowHead, 2, replyLink);		
 		stream.getCellFormatter().addStyleName(rowHead, 2, "reply");
 		
 		// create message body
@@ -201,7 +211,8 @@ public class PalmscomWidget extends Composite implements Collapsible {
 	}
 
 	public void transitionToState(NotifyStateType state) {
-		// TODO Create transition code		
+		// TODO Create transition code	
+		GWT.log(state.toString());
 	}
 
 	@Override

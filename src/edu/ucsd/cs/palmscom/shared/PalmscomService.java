@@ -52,16 +52,16 @@ public interface PalmscomService extends RemoteService {
 	 */
 	public List<User> getOnlineUsers();
 	
-//	/**
-//	 * Get a dictionary of user settings associated
-//	 * with the current logged in user.
-//	 * @return
-//	 */
-//	public Dictionary getUserSettings();
-//	
-//	/**
-//	 * Save the current user's settings.
-//	 * @param settings
-//	 */
-//	public void saveUserSettings(Dictionary settings);
+	/**
+	 * Get a dictionary of user settings associated
+	 * with the current logged in user.
+	 * @return
+	 */
+	public Settings getUserSettings();
+	
+	/**
+	 * Save the current user's settings.
+	 * @param settings
+	 */
+	public void saveUserSettings(Settings settings);
 }

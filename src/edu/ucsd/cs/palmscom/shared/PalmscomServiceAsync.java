@@ -16,12 +16,12 @@ public interface PalmscomServiceAsync {
 
 	void getOnlineUsers(AsyncCallback<List<User>> callback);
 
-//	void getUserSettings(AsyncCallback<Dictionary> callback);
-//
-//	void saveUserSettings(Dictionary settings, AsyncCallback<Void> callback);
-
 	void search(String query, AsyncCallback<List<Message>> callback);
 
 	void sendMessage(Message msg, AsyncCallback<Void> callback);
+
+	void getUserSettings(AsyncCallback<Settings> callback);
+
+	void saveUserSettings(Settings settings, AsyncCallback<Void> callback);
 
 }

@@ -115,28 +115,45 @@
 .stream {
   margin: 5px 10px;
   font-family: sans-serif;
+  font-size: 12px;  
 }
 
-.stream td {
-  font-size: 12px;
+.stream .header div { 
 }
 
 .stream .time, .stream .author, .stream .reply {
+  float: left;
   color: #777;
   font-size: 11px; 
   white-space: nowrap;
 }
 
-.stream .author {
+.stream .author h2 {
+  display: inline;
+  font-size: 14px;
   font-weight: bold;
 }
 
-.author {
-  padding-left: 10px;
-  width: 100%;
+.stream .time {
+  padding-left: 5px;
+  padding-top: 3px;
+}
+
+.stream .reply {
+  cursor: pointer;
+  float: right;
 }
 
 .message {
+  clear: both;
   padding-bottom: 10px;
+}
+
+.message .user {
+  color: red;
+}
+
+.message .keyword {
+  color: blue;
 }
 

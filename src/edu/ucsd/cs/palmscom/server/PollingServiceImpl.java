@@ -3,26 +3,43 @@ package edu.ucsd.cs.palmscom.server;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-import com.google.gwt.i18n.client.Dictionary;
+import javax.servlet.http.HttpSession;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.PalmscomService;
+import edu.ucsd.cs.palmscom.shared.Settings;
 import edu.ucsd.cs.palmscom.shared.User;
 import edu.ucsd.cs.palmscom.shared.UserType;
 
 public class PollingServiceImpl extends RemoteServiceServlet implements PalmscomService {
 	private static final long serialVersionUID = -3337342865130794732L;
-	private static ArrayList<Message> messages = new ArrayList<Message>();
-	private static ArrayList<User> users = new ArrayList<User>();
+	private ArrayList<Message> messages = new ArrayList<Message>();
+	private ArrayList<User> users = new ArrayList<User>();
+	private int userCounter = 0;
+	
+	private User getSessionUser() {
+		HttpSession session = getThreadLocalRequest().getSession(true);
+
+		if(session.getAttribute("user") == null) {
+			session.setAttribute("user", users.get(userCounter));
+			userCounter = (userCounter + 1) % 2;		
+		}
+		
+		return (User)session.getAttribute("user");
+	}
 	
 	public PollingServiceImpl() { 
 		User adm = new User("Barry");
 		adm.setType(UserType.ADMIN);
 		users.add(adm);
 		
-		User sup = new User("Suneeth");
+		User sup = new User("Suni");
 		sup.setType(UserType.SUPPORTER);
 		users.add(sup);
 		
@@ -31,7 +48,7 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 	}
 	
 	// assumes the messages list is sorted
-	private static int indexOfLargerOrEqual(Date date) {				
+	private int indexOfLargerOrEqual(Date date) {				
 		if(messages.size() == 0)
 			return -1;
 		
@@ -51,12 +68,10 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 	@Override
 	public void sendMessage(Message msg) {
 		// get real user name from logged in user
-		User currentUser = new User();
-		currentUser.setNickname("Homer");
 		
 		msg.setDate(new Date());
 		msg.setID(messages.size());
-		msg.setAuthor(currentUser);
+		msg.setAuthor(getSessionUser());
 		
 		messages.add(msg);		
 	}
@@ -98,17 +113,24 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 		return users;
 	}
 
-//	@Override
-//	public Dictionary getUserSettings() {
-//		Dictionary res = Dictionary.getDictionary("settings");
-//		
-//		return res;
-//	}
-//
-//	@Override
-//	public void saveUserSettings(Dictionary settings) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	@Override
+	public Settings getUserSettings() {
+		Settings s = new Settings();
+		
+		s.setCurrentUser(getSessionUser());
+		
+		
+		s.getKeywords().add("PALMS");
+		s.getKeywords().add("Dataset");
+		s.getKeywords().add("help");
+		
+		return s;
+	}
+
+	@Override
+	public void saveUserSettings(Settings settings) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

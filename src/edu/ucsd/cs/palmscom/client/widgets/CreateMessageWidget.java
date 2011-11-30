@@ -10,17 +10,19 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 
-import edu.ucsd.cs.palmscom.client.ClientServiceHandler;
+import edu.ucsd.cs.palmscom.client.ClientServiceProxy;
 import edu.ucsd.cs.palmscom.client.Collapsible;
-import edu.ucsd.cs.palmscom.client.VisualStateChangeEvent;
-import edu.ucsd.cs.palmscom.client.VisualStateChangeHandler;
 import edu.ucsd.cs.palmscom.client.VisualStateType;
+import edu.ucsd.cs.palmscom.client.events.VisualStateChangeEvent;
+import edu.ucsd.cs.palmscom.client.events.VisualStateChangeHandler;
 import edu.ucsd.cs.palmscom.shared.Message;
 
 public class CreateMessageWidget extends Composite implements Collapsible {
@@ -32,9 +34,9 @@ public class CreateMessageWidget extends Composite implements Collapsible {
 	private final FlowPanel panel = new FlowPanel();
 	private final WatermarkTextArea text = new WatermarkTextArea();
 	private final Button button = new Button("Send");		
-	private final ClientServiceHandler svc;	
+	private final ClientServiceProxy svc;	
 	
-	public CreateMessageWidget(ClientServiceHandler svc) {
+	public CreateMessageWidget(ClientServiceProxy svc) {
 		this.svc = svc;
 		
 		// Sets the widget to be wrapped by the composite. 		
@@ -60,17 +62,31 @@ public class CreateMessageWidget extends Composite implements Collapsible {
 	private void setupBindings() {
 		// allow users to click send button by hitting
 		// while typing a message. Does not work with Firefox it seems.
-		text.addKeyPressHandler(new KeyPressHandler() {
-			// TODO: This apparently does not work properly in 
-			// Firefox, workarounds include using key[up|down] instead,
-			// but that has other problems such as repeat keys.
+		text.addKeyUpHandler(new KeyUpHandler() {
+			
 			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				if(event.getCharCode() == KeyCodes.KEY_ENTER) {
+			public void onKeyUp(KeyUpEvent event) {
+				// TODO Auto-generated method stub
+				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 					button.click();
+				} else if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+					text.setText("");
+					text.setFocus(false);
 				}
 			}
 		});
+		
+//		text.addKeyPressHandler(new KeyPressHandler() {
+//			// TODO: This apparently does not work properly in 
+//			// Firefox, workarounds include using key[up|down] instead,
+//			// but that has other problems such as repeat keys.
+//			@Override
+//			public void onKeyPress(KeyPressEvent event) {
+//				if(event.getCharCode() == KeyCodes.KEY_ENTER) {
+//					button.click();
+//				}
+//			}
+//		});
 		
 		text.addFocusHandler(new FocusHandler() {			
 			@Override

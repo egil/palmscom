@@ -15,11 +15,11 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
-import edu.ucsd.cs.palmscom.client.ClientServiceHandler;
+import edu.ucsd.cs.palmscom.client.ClientServiceProxy;
 import edu.ucsd.cs.palmscom.client.Collapsible;
-import edu.ucsd.cs.palmscom.client.VisualStateChangeEvent;
-import edu.ucsd.cs.palmscom.client.VisualStateChangeHandler;
 import edu.ucsd.cs.palmscom.client.VisualStateType;
+import edu.ucsd.cs.palmscom.client.events.VisualStateChangeEvent;
+import edu.ucsd.cs.palmscom.client.events.VisualStateChangeHandler;
 import edu.ucsd.cs.palmscom.shared.User;
 
 public class OnlineUsersWidget extends Composite implements Collapsible {
@@ -28,13 +28,13 @@ public class OnlineUsersWidget extends Composite implements Collapsible {
 
 	private int onlineUserCount = 0;
 	private final HandlerManager handlerManager = new HandlerManager(this);
-	private final ClientServiceHandler svc;	
+	private final ClientServiceProxy svc;	
 	private final ScrollPanel onlineUsersList = new ScrollPanel();
 	private final HTML summary = new HTML();
 	private final FlowPanel panel = new FlowPanel();
 	private final FocusPanel fpanel = new FocusPanel();
 	
-	public OnlineUsersWidget(ClientServiceHandler svc){
+	public OnlineUsersWidget(ClientServiceProxy svc){
 		this.svc = svc;
 		
 		// Sets the widget to be wrapped by the composite. 		

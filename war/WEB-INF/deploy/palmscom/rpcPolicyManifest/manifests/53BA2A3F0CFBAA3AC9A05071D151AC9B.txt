@@ -1,0 +1,2 @@
+serviceClass: edu.ucsd.cs.palmscom.shared.PalmscomService
+path: DCD239B0F20CA9459D3B504372F9AB26.gwt.rpc

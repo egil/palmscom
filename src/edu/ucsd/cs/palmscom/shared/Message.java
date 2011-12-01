@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class Message implements Serializable {
 	private static final long serialVersionUID = -1137037623524123720L;
+	private transient Boolean isOwnMessage;
 	private int ID;
 	private String text;
 	private Date date;
@@ -61,7 +62,12 @@ public class Message implements Serializable {
 		return "id-" + this.getID();
 	}
 	
-	public Boolean isOwnMessage(User user) {
-		return user.compareTo(author) == 0;
+	public void setIsOwnMessage(Boolean isOwnMessage) {
+		this.isOwnMessage = isOwnMessage;
 	}
+	
+	public Boolean isOwnMessage() {
+		return isOwnMessage;
+	}
+	
 }

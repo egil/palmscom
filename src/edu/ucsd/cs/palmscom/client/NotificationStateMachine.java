@@ -1,5 +1,6 @@
 package edu.ucsd.cs.palmscom.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Timer;
 
@@ -29,7 +30,8 @@ public class NotificationStateMachine {
 		inactiveTimer = new Timer() {			
 			@Override
 			public void run() {
-				if(state == NotifyStateType.PASSIVE_NOTIFY) {
+				if(state == NotifyStateType.ACTIVE) {
+					GWT.log("inactive timer");
 					state = NotifyStateType.INACTIVE;
 					handlerManager.fireEvent(new NotifyStateEvent(state));
 				}
@@ -42,12 +44,14 @@ public class NotificationStateMachine {
 		// switch to an active state
 		if(state == NotifyStateType.INACTIVE) {
 			state = NotifyStateType.ACTIVE;
+			handlerManager.fireEvent(new NotifyStateEvent(state));
 		}
 		
 		// if it is a MoI, we always jump to 
 		// active notify state no matter the current sate
 		if(msg.getIsMessageOfIntrest()) {
 			state = NotifyStateType.ACTIVE_NOTIFY;
+			handlerManager.fireEvent(new NotifyStateEvent(state));
 			// restart activeNotifyTImer
 			activeNotifyTimer.cancel();
 			activeNotifyTimer.schedule(ACTIVE_NOTIFY_TIME);
@@ -57,7 +61,7 @@ public class NotificationStateMachine {
 		inactiveTimer.cancel();
 		inactiveTimer.schedule(INACTIVE_NOTIFY_TIME);
 		
-		handlerManager.fireEvent(new NotifyStateEvent(state));
+		//handlerManager.fireEvent(new NotifyStateEvent(state));
 	}
 	
 	public void onUserClick() {

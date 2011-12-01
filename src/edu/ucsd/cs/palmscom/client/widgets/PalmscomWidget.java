@@ -7,11 +7,14 @@ import org.adamtacy.client.ui.effects.transitionsphysics.EaseInOutTransitionPhys
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.LayoutPanel;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -39,7 +42,7 @@ import edu.ucsd.cs.palmscom.shared.Settings;
 public class PalmscomWidget extends Composite implements Collapsible {
 	private final ClientServiceProxy svc = new PollingServiceProxyImpl();
 	private final NotificationStateMachine nsm = new NotificationStateMachine();
-	private VisualStateType state = VisualStateType.EXPANDED;
+	private VisualStateType state = VisualStateType.COLLAPSED;
 	private Boolean hasFocus = false; 
 	private Settings settings;
 	
@@ -85,19 +88,17 @@ public class PalmscomWidget extends Composite implements Collapsible {
 		// set style and wrap layout in focus panel
 		layout.setStylePrimaryName("container");
 		
+		// create header
+		createHeaderUI();			
+		
 		nsm.addStateChangeHandler(new NotifyStateHandler() {			
 			@Override
 			public void onStateChange(NotifyStateEvent event) {
-				transitionToState(event.getState());
+				//transitionToState(event.getState());
+				csw.transition(event.getState());
 			}
 		});
-		
-		// create header
-		createHeaderUI();
-		
-		// set collapsed size initially		
-		layout.addNorth(cmw, cmw.getHeight());
-		// set up handler for updating the size of the CMW widget
+					
 		cmw.addStateChangeHandler(new VisualStateChangeHandler() {			
 			@Override
 			public void onStateChange(VisualStateChangeEvent event) {				
@@ -107,8 +108,6 @@ public class PalmscomWidget extends Composite implements Collapsible {
 			}
 		});		
 		
-		// create footer/show list of online users panel		
-		layout.addSouth(ouw, ouw.getHeight());
 		ouw.addStateChangeHandler(new VisualStateChangeHandler() {			
 			@Override
 			public void onStateChange(VisualStateChangeEvent event) {
@@ -129,14 +128,50 @@ public class PalmscomWidget extends Composite implements Collapsible {
 				cmw.setText(event.getNickname() + ": ");
 			}
 		});
-		layout.add(csw);
+		csw.addVisualStateChangeHandler(new VisualStateChangeHandler() {			
+			@Override
+			public void onStateChange(VisualStateChangeEvent event) {
+				ToggleState();
+			}
+		});
+
+		ToggleState();
 		csw.Init(settings);
+	}
+	
+	private void ToggleState() {
+		if(state == VisualStateType.EXPANDED) {
+			state = VisualStateType.COLLAPSED;
+			ouw.removeFromParent();
+			//ouw.setVisible(false);
+			cmw.removeFromParent();
+			//cmw.setVisible(false);
+			header.removeFromParent();
+			//header.setVisible(false);
+			csw.setState(state);
+			csw.removeFromParent();
+			layout.addNorth(csw, 34);
+		} else {
+			state = VisualStateType.EXPANDED;
+			layout.addNorth(header, 34);
+			layout.addNorth(cmw, cmw.getHeight());
+			layout.addSouth(ouw, ouw.getHeight());
+			layout.add(csw);
+		}		
 	}
 	
 	private void createHeaderUI() {
 		header.setStylePrimaryName("header");
-		header.add(new HTML("<h1>PALMSCom</h1>"));
-		layout.addNorth(header, 33);
+		header.add(new HTML("<h1>PALMSCom</h1>"));		
+		Image upArrow = new Image();
+		upArrow.setUrl("img/up-arrow.png");		
+		upArrow.addClickHandler(new ClickHandler() {			
+			@Override
+			public void onClick(ClickEvent event) {
+				ToggleState();
+			}
+		});		
+		header.add(upArrow);
 	}		
 
 	public void transitionToState(NotifyStateType state) {

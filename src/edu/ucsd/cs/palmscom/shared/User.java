@@ -32,6 +32,6 @@ public class User implements Serializable, Comparable<User> {
 	@Override
 	public int compareTo(User o) {		
 		return this.nickname.compareTo(o.nickname);
-	}	
+	}
 }
 

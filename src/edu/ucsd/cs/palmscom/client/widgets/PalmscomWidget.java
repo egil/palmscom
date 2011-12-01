@@ -1,5 +1,10 @@
 package edu.ucsd.cs.palmscom.client.widgets;
 
+import org.adamtacy.client.ui.effects.events.EffectCompletedEvent;
+import org.adamtacy.client.ui.effects.events.EffectCompletedHandler;
+import org.adamtacy.client.ui.effects.impl.ChangeColor;
+import org.adamtacy.client.ui.effects.transitionsphysics.EaseInOutTransitionPhysics;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 
@@ -7,6 +12,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.LayoutPanel;
 
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -18,6 +24,7 @@ import edu.ucsd.cs.palmscom.client.Collapsible;
 import edu.ucsd.cs.palmscom.client.NotificationStateMachine;
 import edu.ucsd.cs.palmscom.client.NotifyStateType;
 import edu.ucsd.cs.palmscom.client.PollingServiceProxyImpl;
+import edu.ucsd.cs.palmscom.client.VisualStateType;
 import edu.ucsd.cs.palmscom.client.events.AddedMessageEvent;
 import edu.ucsd.cs.palmscom.client.events.AddedMessageHandler;
 import edu.ucsd.cs.palmscom.client.events.NotifyStateEvent;
@@ -32,15 +39,16 @@ import edu.ucsd.cs.palmscom.shared.Settings;
 public class PalmscomWidget extends Composite implements Collapsible {
 	private final ClientServiceProxy svc = new PollingServiceProxyImpl();
 	private final NotificationStateMachine nsm = new NotificationStateMachine();
+	private VisualStateType state = VisualStateType.EXPANDED;
+	private Boolean hasFocus = false; 
 	private Settings settings;
 	
 	// Primary layout controls
 	private final DockLayoutPanel layout = new DockLayoutPanel(Unit.PX);
-	
-	// Header controls
-	private final FlowPanel header = new FlowPanel();
 
+	
 	// Widgets
+	private final FlowPanel header = new FlowPanel();
 	private final CreateMessageWidget cmw = new CreateMessageWidget(svc);
 	private final OnlineUsersWidget ouw = new OnlineUsersWidget(svc);
 	private final ConversationStreamWidget csw = new ConversationStreamWidget(svc);
@@ -94,6 +102,8 @@ public class PalmscomWidget extends Composite implements Collapsible {
 			@Override
 			public void onStateChange(VisualStateChangeEvent event) {				
 				layout.setWidgetSize(cmw, cmw.getHeight());
+				hasFocus = event.getState() == VisualStateType.EXPANDED;
+				csw.setHasFocus(hasFocus);
 			}
 		});		
 		
@@ -110,7 +120,7 @@ public class PalmscomWidget extends Composite implements Collapsible {
 		csw.addAddedMessageHandler(new AddedMessageHandler() {			
 			@Override
 			public void onAddedMessage(AddedMessageEvent event) {
-				nsm.onNewMessage(event.getMessage());
+				nsm.onNewMessage(event.getMessage());				
 			}
 		});
 		csw.addReplyButtonClickHandler(new ReplyButtonClickHandler() {			
@@ -122,7 +132,7 @@ public class PalmscomWidget extends Composite implements Collapsible {
 		layout.add(csw);
 		csw.Init(settings);
 	}
-
+	
 	private void createHeaderUI() {
 		header.setStylePrimaryName("header");
 		header.add(new HTML("<h1>PALMSCom</h1>"));

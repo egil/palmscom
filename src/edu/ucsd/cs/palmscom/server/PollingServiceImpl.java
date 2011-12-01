@@ -43,7 +43,7 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 		sup.setType(UserType.SUPPORTER);
 		users.add(sup);
 		
-		User homer = new User("Homer");
+		User homer = new User("Egil");
 		users.add(homer);
 	}
 	
@@ -119,10 +119,11 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 		
 		s.setCurrentUser(getSessionUser());
 		
-		
-		s.getKeywords().add("PALMS");
-		s.getKeywords().add("Dataset");
-		s.getKeywords().add("help");
+		if(s.getCurrentUser().getType() != UserType.USER) {
+			s.getKeywords().add("PALMS");
+			s.getKeywords().add("Dataset");
+			s.getKeywords().add("help");
+		}
 		
 		return s;
 	}

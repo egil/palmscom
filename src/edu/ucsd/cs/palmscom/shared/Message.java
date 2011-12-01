@@ -60,4 +60,8 @@ public class Message implements Serializable {
 	public String getHtmlID() {
 		return "id-" + this.getID();
 	}
+	
+	public Boolean isOwnMessage(User user) {
+		return user.compareTo(author) == 0;
+	}
 }

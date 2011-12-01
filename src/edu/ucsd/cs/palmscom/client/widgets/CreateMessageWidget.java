@@ -76,18 +76,6 @@ public class CreateMessageWidget extends Composite implements Collapsible {
 			}
 		});
 		
-//		text.addKeyPressHandler(new KeyPressHandler() {
-//			// TODO: This apparently does not work properly in 
-//			// Firefox, workarounds include using key[up|down] instead,
-//			// but that has other problems such as repeat keys.
-//			@Override
-//			public void onKeyPress(KeyPressEvent event) {
-//				if(event.getCharCode() == KeyCodes.KEY_ENTER) {
-//					button.click();
-//				}
-//			}
-//		});
-		
 		text.addFocusHandler(new FocusHandler() {			
 			@Override
 			public void onFocus(FocusEvent event) {

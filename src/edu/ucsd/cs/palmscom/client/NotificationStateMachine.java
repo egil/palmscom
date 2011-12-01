@@ -29,8 +29,10 @@ public class NotificationStateMachine {
 		inactiveTimer = new Timer() {			
 			@Override
 			public void run() {
-				state = NotifyStateType.INACTIVE;
-				handlerManager.fireEvent(new NotifyStateEvent(state));
+				if(state == NotifyStateType.PASSIVE_NOTIFY) {
+					state = NotifyStateType.INACTIVE;
+					handlerManager.fireEvent(new NotifyStateEvent(state));
+				}
 			}
 		};
 	}

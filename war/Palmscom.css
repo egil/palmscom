@@ -113,7 +113,7 @@
  */
 
 .stream {
-  margin: 5px 10px;
+  /*margin: 5px 10px;*/
   font-family: sans-serif;
   font-size: 12px;  
 }
@@ -128,32 +128,68 @@
   white-space: nowrap;
 }
 
-.stream .author h2 {
+.message {
+  background: #f5f5f5;
+  margin: 5px;
+  padding: 5px;
+}
+
+.message.own { 
+  /*background: #fff;*/
+}
+
+.message.moi {
+  background: #ffffd8;
+}
+
+.message .author h2 {
+  color: #133fcf;
   display: inline;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
 }
 
-.stream .time {
-  padding-left: 5px;
-  padding-top: 3px;
+.message.own .author h2 {
+  color: #666;
 }
 
-.stream .reply {
-  cursor: pointer;
+.message .time {
   float: right;
+  padding-left: 5px;
+  padding-top: 1px;
 }
 
-.message {
-  clear: both;
-  padding-bottom: 10px;
+.message  .reply {
+  cursor: pointer;
+  float: left;
+  padding-left: 5px;
 }
 
-.message .user {
-  color: red;
+.reply a {
+  color: #64b4ff; 
 }
 
-.message .keyword {
-  color: blue;
+.message .text {
+  clear: both;  
 }
+
+.message .text p {
+  color: #333;
+  margin: 0;
+}
+
+.message.own .text {
+  font-style: italic;
+}
+
+.message .text .user {
+  /*color: #931818;*/
+  font-weight: bold;
+}
+
+.message .text .keyword {
+ /* color: #181d93;*/
+  font-weight: bold;
+}
+
 

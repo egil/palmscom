@@ -87,7 +87,7 @@ public class CreateMessageWidget extends Composite implements Collapsible {
 		
 		text.addBlurHandler(new BlurHandler() {			
 			@Override
-			public void onBlur(BlurEvent event) {
+			public void onBlur(BlurEvent event) {		
 				if(text.getText().isEmpty()) {
 					button.setVisible(false);
 					state = VisualStateType.COLLAPSED;
@@ -104,7 +104,7 @@ public class CreateMessageWidget extends Composite implements Collapsible {
 			}
 		});
 	}
-	
+
 	/**
 	 * SEND MESSAGE WORKFLOW:
 	 * 
@@ -192,10 +192,6 @@ public class CreateMessageWidget extends Composite implements Collapsible {
 		return state == VisualStateType.COLLAPSED ? COLLAPSED_SIZE : EXPANDED_SIZE;
 	}
 
-	@Override
-	public double getWidth() {
-		return 0;
-	}
 }
 
 

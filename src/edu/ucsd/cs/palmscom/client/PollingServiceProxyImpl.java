@@ -60,6 +60,9 @@ public class PollingServiceProxyImpl implements ClientServiceProxy {
 						//GWT.log("SUCCESS: subscribe -> getMessages(" + lastRefresh.toString() + ")");
 						if(result.size() > 0) { 
 							GWT.log("SUCCESS: subscribe -> new messages(" + result.size() + ")");
+							
+							for(Message m : result) MessagePreprocessor.Preprocess(m);
+							
 							// set lastRefresh to newest message
 							lastRefresh = result.get(result.size() - 1).getDate();
 
@@ -93,6 +96,7 @@ public class PollingServiceProxyImpl implements ClientServiceProxy {
 			@Override
 			public void onSuccess(List<Message> result) {
 				GWT.log("SUCCESS: getMessages(limit)");
+				for(Message m : result) MessagePreprocessor.Preprocess(m);
 				callback.onSuccess(result);					
 			}
 			
@@ -112,6 +116,7 @@ public class PollingServiceProxyImpl implements ClientServiceProxy {
 			@Override
 			public void onSuccess(List<Message> result) {
 				GWT.log("SUCCESS: getMessages(to)");
+				for(Message m : result) MessagePreprocessor.Preprocess(m);
 				callback.onSuccess(result);					
 			}
 			

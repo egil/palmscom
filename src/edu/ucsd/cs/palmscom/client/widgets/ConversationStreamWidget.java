@@ -47,7 +47,6 @@ import edu.ucsd.cs.palmscom.shared.Settings;
 
 public class ConversationStreamWidget extends ConversationStream {
 	private final HandlerManager handlerManager = new HandlerManager(this);
-	private final CollapsedConversationStreamWidget ccsw = new CollapsedConversationStreamWidget();
 	private boolean hasFocus = false;
 	private VisualStateType state = VisualStateType.EXPANDED;
 	private final FlowPanel layout = new FlowPanel();
@@ -57,22 +56,9 @@ public class ConversationStreamWidget extends ConversationStream {
 	public ConversationStreamWidget(ClientServiceProxy service) {
 		super(service, 20);
 		initWidget(layout);
-		layout.add(ccsw);
 		layout.add(streamContainer);
 		streamContainer.setStyleName("stream");
 		streamContainer.add(stream);
-		
-		ccsw.setVisible(false);
-		ccsw.addClickHandler(new ClickHandler() {			
-			@Override
-			public void onClick(ClickEvent event) {
-				// TODO Auto-generated method stub
-				ccsw.setVisible(false);
-				streamContainer.setVisible(true);
-				state = VisualStateType.EXPANDED;
-				handlerManager.fireEvent(new VisualStateChangeEvent(state));
-			}
-		});
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -83,8 +69,6 @@ public class ConversationStreamWidget extends ConversationStream {
 			GWT.log("WARNING: The message " + msg.getID() + " was retransmitted, already exists in the conversation stream.");
 			return;
 		}
-		
-		ccsw.addMessage(msg);
 					
 		// create message header
 		final FlowPanel row = new FlowPanel();
@@ -199,15 +183,5 @@ public class ConversationStreamWidget extends ConversationStream {
 
 	public void addVisualStateChangeHandler(VisualStateChangeHandler handler) {
 		handlerManager.addHandler(VisualStateChangeEvent.getType(), handler);  
-	}
-	
-	public void setState(VisualStateType state) {
-		this.state = state;
-		ccsw.setVisible(true);
-		streamContainer.setVisible(false);
-	}
-	
-	public void transition(NotifyStateType type) {
-		ccsw.transition(type);
 	}
 }

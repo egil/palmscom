@@ -26,33 +26,27 @@ import edu.ucsd.cs.palmscom.shared.Message;
 public class CollapsedConversationStreamWidget extends Composite {
 	private final FlowPanel stream = new FlowPanel();
 	private final FlowPanel message = new FlowPanel();
-	private final Image expandBtn = new Image();
 	private NotifyStateType currentState;
 	private final Fade activeNotify;
 	
 	public CollapsedConversationStreamWidget() {
 		initWidget(stream);		
-		stream.setStylePrimaryName("collapsed-stream");		
-		
-		stream.add(message);
+		stream.add(message);		
 		message.setStylePrimaryName("message");
-		HTML defaultText = new HTML("<h1>PALMSCom</h1>");
-		defaultText.setStylePrimaryName("text");
-		defaultText.addStyleDependentName("default");
-		message.add(defaultText);
 		
-		stream.add(expandBtn);				
-		expandBtn.setUrl("img/down-arrow.png");
-		expandBtn.setStylePrimaryName("expand");
-		
+//		HTML defaultText = new HTML("PALMSCom");
+//		defaultText.setStylePrimaryName("text");
+//		defaultText.addStyleDependentName("default");
+//		message.add(defaultText);
+//		
 		activeNotify = new Fade(message.getElement());
 		activeNotify.setDuration(0.5);			
 		activeNotify.setTransitionType(new EaseInOutTransitionPhysics());
 		activeNotify.setLooping(true);
 	}	
-		
-	public void addMessage(Message msg) {	
-		String timeauthor = "";		
+	
+	public void setMessage(Message msg) {
+		String timeauthor = "";
 		
 		timeauthor += "<span class=\"time\">" + DateTimeFormat.getFormat("h:mm a").format(msg.getDate()) +
 				" - </span>";
@@ -65,7 +59,7 @@ public class CollapsedConversationStreamWidget extends Composite {
 		text.setStylePrimaryName("text");
 		
 		// animate if visible
-		if(this.isVisible()) {
+		if(this.isAttached()) {
 			final Fade fade = new Fade(message.getElement());		
 			fade.setDuration(0.5);			
 			fade.setTransitionType(new EaseInOutTransitionPhysics());
@@ -87,14 +81,19 @@ public class CollapsedConversationStreamWidget extends Composite {
 			message.add(text);			
 		}
 	}
-
+	
 	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
+	public void onAttach() { 
+		super.onAttach();
 		
-		if(!this.isVisible()) {
-			transition(NotifyStateType.INACTIVE);
-		}
+		if(currentState == NotifyStateType.ACTIVE_NOTIFY  || currentState == NotifyStateType.PASSIVE_NOTIFY)
+			transition(NotifyStateType.ACTIVE);
+	}
+	
+	@Override
+	public void onDetach() {
+		super.onDetach();
+		transition(NotifyStateType.INACTIVE);
 	}
 	
 	public void transition(NotifyStateType state) {
@@ -115,8 +114,4 @@ public class CollapsedConversationStreamWidget extends Composite {
 			activeNotify.play();		
 		}
 	}	
-	
-	public void addClickHandler(ClickHandler handler) {
-		expandBtn.addClickHandler(handler);
-	}
 }

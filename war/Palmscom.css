@@ -1,3 +1,54 @@
+/**
+ * PALMS Main window, replaced with real PALMS in production 
+ */
+.palms {
+  background: transparent url('palms-screenshot.png') no-repeat center center;
+  padding: 15px;
+  width: 1150px;
+  height: 717px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/**
+ * PALMSCom container, main styles for widget.
+ */
+.palmscom {
+
+  -webkit-box-shadow: 0px 0px 1px #000; 
+     -moz-box-shadow: 0px 0px 1px #000; 
+          box-shadow: 0px 0px 1px #000; 
+
+  border-left: 1px solid #eee;
+  background: #ffffff;
+  width: 300px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+}
+
+.palmscom:focus,
+.palmscom div:focus {
+  outline: none;
+}
+
+.palmscom.palmscom-horizontal.collapsed {
+  border-left: 1px solid #eee;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  height: 30px;
+  right: 15px;
+  bottom: auto;
+}
+
+.palmscom.palmscom-vertical.collapsed {
+  width: 30px;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -17,91 +68,87 @@
   /*background: rgba(221, 221, 221, 0.4);*/ 
 }
 
-.main {
-  padding: 0 10px;
-}
-
-.container {  
-  width: 300px;
-  margin: 10px;
-}
-
-.header {  
-  border: 1px solid #eee;
-  color: #333;
-}
-
-.header h1 {
-  float: left;
-  font-size: 14px;
-  font-weight: normal;
-  margin: 6px 0 0 10px;
-}
-
-.header img,
-.expand {
-  border-left: 1px solid #eee; 
-  background: #fff;
-  cursor: pointer;
-  display: block;
-  float: right;
-  height: 20px;
-  padding: 6px 10px;
-}
-
-.gwt-Hyperlink {
-  cursor: pointer;
+.palmscom .layout {
+  bottom: 0px;
+  height: 100%;
+  top: 0px;
 }
 
 /**
- * CreateMessageWidget styles
+ * PALMSCom header, sits at top, no matter state (collapsed/expanded)
  */
-.create-message {
-  border-left: 1px solid #eee;
-  border-right: 1px solid #eee; 
-  border-bottom: 3px solid #eee;
-  padding: 10px 10px;  
+.palmscom .com-header {
+  border-bottom: 1px solid #eee;
 }
 
-.create-message .gwt-Button {
-  display: block;
-  float: right;
-  margin-top: 1px;
+.palmscom.palmscom-horizontal.collapsed .com-header {
+  border-bottom: none;
 }
 
-.create-message .textInput {  
-  border: 1px solid #eee;
-  display: block;
-  float: left;
-  padding: 4px;
-  width: 215px;
-  height: 55px;
+.palmscom .com-header .toggler {  
+  border-left: 1px solid #eee;  
+  cursor: pointer;
+  height: 20px;
+  padding: 5px;
+  width: 20px;
+  top: 0px;
+  right: 0px;
+  position: absolute;  
 }
 
-.create-message .textInput:focus {
-  outline: none;  
-}
-
-.create-message .textInput-watermark {
-  color: #666;
-  display: block;
-  font-style: italic;  
-  width: 264px;
-  height: 18px;
-}
-
-.create-message textarea {
-  font-size: 12px;  
-  font-family: Arial Unicode MS, Arial, sans-serif;
+.palmscom .com-header .content {    
+    height: 30px;
+    width: 268px;
+  /*padding: 5px;*/
+  /*margin: 0 5px;*/   
+} 
+.palmscom .com-header .content * {
   overflow: hidden;
-  resize: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.palmscom.palmscom-horizontal .com-header .toggler {
+  background: #fff url('img/arrows.png') no-repeat -1px 0px;
+}
+
+.palmscom.palmscom-horizontal.collapsed .com-header .toggler {
+  background: #fff url('img/arrows.png') no-repeat -29px -29px;
+}
+
+.palmscom.palmscom-vertical .com-header .toggler {
+  background: #fff url('img/arrows.png') no-repeat -28px -1px;
+}
+
+.palmscom.palmscom-vertical.collapsed .com-header .toggler {
+  border-bottom: 1px solid #eee;
+  background: #fff url('img/arrows.png') no-repeat -1px -30px;
+}
+
+.palmscom.palmscom-vertical.collapsed .com-header .content {  
+  margin: 36px 0 0 0; 
+  height: auto;
+  width: 30px;
+  -webkit-transform: rotate(90deg);  
+  -moz-transform: rotate(90deg);  
+  -ms-transform: rotate(90deg);  
+  -o-transform: rotate(90deg);  
+  transform: rotate(90deg);
+  zoom: 1;
+}
+
+.palmscom.palmscom-vertical.collapsed .com-header .content * {
+  overflow: visible;
+}
+
+.lt-ie9 .palmscom.palmscom-vertical.collapsed .com-header .content {
+  filter: progid:DXImageTransform.Microsoft.Matrix(M11=6.123031769111886e-17, M12=-1, M21=1, M22=6.123031769111886e-17, sizingMethod='auto expand');
 }
 
 /**
  * OnlineUsersWidget styles
  */
-.online-users {
-  border: 1px solid #eee; 
+.palmscom .online-users {
   border-top: 3px solid #eee;
   color: #666;
   cursor: pointer;
@@ -110,11 +157,7 @@
   text-align: center;
 }
 
-.online-users:focus {
-  outline: none;
-}
-
-.online-users ul {
+.palmscom .online-users ul {
   text-align: left;
   line-height: 16px;
   margin: 0 10px 0 25px;
@@ -122,11 +165,57 @@
 }
 
 /**
+ * CreateMessageWidget styles
+ */
+.palmscom .create-message {
+  border-bottom: 3px solid #eee;
+  padding: 10px 10px;  
+}
+
+.palmscom .create-message .gwt-Button {
+  display: block;
+  float: right;
+  margin-top: 1px;
+}
+
+.palmscom .create-message .textInput {  
+  border: 1px solid #eee;
+  display: block;
+  float: left;
+  padding: 4px;
+  width: 215px;
+  height: 55px;
+}
+
+.palmscom .textInput:focus {
+  outline: none;  
+}
+
+.palmscom .create-message .textInput-watermark {
+  color: #666;
+  display: block;
+  font-style: italic;  
+  width: 264px;
+  height: 18px;
+}
+
+.palmscom .create-message textarea {
+  font-size: 12px;  
+  font-family: Arial Unicode MS, Arial, sans-serif;
+  overflow: hidden;
+  resize: none;
+}
+
+
+/**
  * Conversation stream styles
  */
 
 .stream {
   /*margin: 5px 10px;*/
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
   font-family: sans-serif;
   font-size: 12px;  
   clear: both;
@@ -212,6 +301,15 @@
   font-weight: bold;
 }
 
+.message-notify {
+  background: #ffffd8;
+}
+
+.com-header .message {
+  padding: 6px 10px;
+}
+
+/*
 .collapsed-stream {  
   background: #fff;
   border: 1px solid #eee;
@@ -243,11 +341,9 @@
   white-space: nowrap;  
 }
 
-.message-notify {
-  background: #ffffd8;
-}
 
 .expand {
   position: relative;
   z-index: 10;
 }
+*/

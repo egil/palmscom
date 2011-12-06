@@ -50,8 +50,7 @@ public class OnlineUsersWidget extends Composite implements Collapsible {
 		onlineUsersList.setVisible(false);
 		
 		// set handler
-		fpanel.addClickHandler(new ClickHandler() {
-			
+		fpanel.addClickHandler(new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
 				// update state
@@ -62,12 +61,12 @@ public class OnlineUsersWidget extends Composite implements Collapsible {
 				
 				handlerManager.fireEvent(new VisualStateChangeEvent(state));				
 			}
-		});		
+		});
 		
 		// get online users list
-		getOnlineUsers();
+		getOnlineUsers();	
 	}
-
+	
 	private void getOnlineUsers() {
 		svc.getOnlineUsers(new AsyncCallback<List<User>>() {				
 			@Override
@@ -133,24 +132,18 @@ public class OnlineUsersWidget extends Composite implements Collapsible {
 		
 		// update user count and trigger visual change notification
 		onlineUserCount = onlineUsers.size();
-		handlerManager.fireEvent(new VisualStateChangeEvent(state));
+		
+		if(this.isAttached()) handlerManager.fireEvent(new VisualStateChangeEvent(state));
 	}
 	
 	public void addStateChangeHandler(VisualStateChangeHandler handler) {
 		handlerManager.addHandler(VisualStateChangeEvent.getType(), handler);  
 	}
-
-	@Override
+	
 	public double getHeight() {
 		if(state == VisualStateType.COLLAPSED)
 			return COLLAPSED_SIZE;		
 		double res = onlineUserCount * 10 + COLLAPSED_SIZE + 25; // 10px = line height		
 		return res;
-	}
-
-	@Override
-	public double getWidth() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 }

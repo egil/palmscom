@@ -1,5 +1,6 @@
 package edu.ucsd.cs.palmscom.client.widgets;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -68,9 +69,9 @@ public class OnlineUsersWidget extends Composite implements Collapsible {
 	}
 	
 	private void getOnlineUsers() {
-		svc.getOnlineUsers(new AsyncCallback<List<User>>() {				
+		svc.getOnlineUsers(new AsyncCallback<User[]>() {				
 			@Override
-			public void onSuccess(List<User> results) {
+			public void onSuccess(User[] results) {
 				updateUserList(results);
 			}
 			
@@ -82,7 +83,7 @@ public class OnlineUsersWidget extends Composite implements Collapsible {
 		});
 	}
 		
-	private void updateUserList(List<User> onlineUsers) {	
+	private void updateUserList(User[] onlineUsers) {	
 		int adms = 0, sups = 0, usrs = 0;
 		
 		for(User u : onlineUsers) {
@@ -111,15 +112,15 @@ public class OnlineUsersWidget extends Composite implements Collapsible {
 			switch (user.getType()) {
 				case ADMIN:
 					admins.appendChild(li);
-					li.setInnerText(user.getNickname() + " (" + user.getType().toString().toLowerCase() + ")");
+					li.setInnerText(user.getType().toString().toLowerCase() + ": " + user.getFullname() + " (" + user.getUsername() + ")");
 					break;
 				case SUPPORTER:
 					supporters.appendChild(li);
-					li.setInnerText(user.getNickname() + " (" + user.getType().toString().toLowerCase() + ")");
+					li.setInnerText(user.getType().toString().toLowerCase() + ": " + user.getFullname() + " (" + user.getUsername() + ")");
 					break;
 				case USER:
 					users.appendChild(li);				
-					li.setInnerText(user.getNickname());
+					li.setInnerText(user.getFullname() + " (" + user.getUsername() + ")");
 					break;
 			}			
 		}
@@ -131,7 +132,7 @@ public class OnlineUsersWidget extends Composite implements Collapsible {
 		onlineUsersList.getElement().appendChild(users);
 		
 		// update user count and trigger visual change notification
-		onlineUserCount = onlineUsers.size();
+		onlineUserCount = onlineUsers.length;
 		
 		if(this.isAttached()) handlerManager.fireEvent(new VisualStateChangeEvent(state));
 	}

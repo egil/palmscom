@@ -73,7 +73,7 @@ public class MessagePreprocessor {
 
 	public static void init(Settings settings) {
 		MessagePreprocessor.settings = settings;
-		userMatcher = RegExp.compile("((^|\\s+)(" + settings.getCurrentUser().getNickname() + ")([\\W]*?)(\\s+|$))", "gi");
+		userMatcher = RegExp.compile("((^|\\s+)(" + settings.getCurrentUser().getFullname() + ")([\\W]*?)(\\s+|$))", "gi");
 		
 		String keywords = "";		
 		for(int i = 0; i < settings.getKeywords().size(); i++) {

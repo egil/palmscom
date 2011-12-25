@@ -1,5 +1,6 @@
 package edu.ucsd.cs.palmscom.shared;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +10,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("service")
 public interface PalmscomService extends RemoteService {
+	public Settings signIn(User user);
+	public void singOut();
+	
 	/**
 	 * Sends a new message to the server
 	 * @param msg
@@ -50,7 +54,7 @@ public interface PalmscomService extends RemoteService {
 	 * Get a list of all online users
 	 * @return
 	 */
-	public List<User> getOnlineUsers();
+	public User[] getOnlineUsers();
 	
 	/**
 	 * Get a dictionary of user settings associated

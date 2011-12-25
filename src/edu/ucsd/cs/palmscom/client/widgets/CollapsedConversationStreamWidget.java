@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVisibility;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 import edu.ucsd.cs.palmscom.client.ClientServiceProxy;
 import edu.ucsd.cs.palmscom.client.NotifyStateType;
@@ -34,11 +35,6 @@ public class CollapsedConversationStreamWidget extends Composite {
 		stream.add(message);		
 		message.setStylePrimaryName("message");
 		
-//		HTML defaultText = new HTML("PALMSCom");
-//		defaultText.setStylePrimaryName("text");
-//		defaultText.addStyleDependentName("default");
-//		message.add(defaultText);
-//		
 		activeNotify = new Fade(message.getElement());
 		activeNotify.setDuration(0.5);			
 		activeNotify.setTransitionType(new EaseInOutTransitionPhysics());
@@ -51,7 +47,7 @@ public class CollapsedConversationStreamWidget extends Composite {
 		timeauthor += "<span class=\"time\">" + DateTimeFormat.getFormat("h:mm a").format(msg.getDate()) +
 				" - </span>";
 		
-		timeauthor += "<span class=\"author\">" + SafeHtmlUtils.htmlEscape(msg.getAuthor().getNickname()) + 
+		timeauthor += "<span class=\"author\">" + SafeHtmlUtils.htmlEscape(msg.getAuthor().getFullname()) + 
 				": </span>";
 				
 		final HTML text = new HTML();

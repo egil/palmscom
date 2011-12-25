@@ -4,21 +4,18 @@ import java.io.Serializable;
 
 public class User implements Serializable, Comparable<User> {
 	private static final long serialVersionUID = 1622463170753612691L;
-	private String nickname;
+	private String fullname;
+	private String username;
 	private UserType type = UserType.USER;
 	
 	public User() { }
 	
-	public User(String nickname) {
-		this.nickname = nickname;
+	public String getFullname() {
+		return fullname;
 	}
 	
-	public String getNickname() {
-		return nickname;
-	}
-	
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 	
 	public UserType getType() {
@@ -31,7 +28,15 @@ public class User implements Serializable, Comparable<User> {
 
 	@Override
 	public int compareTo(User o) {		
-		return this.nickname.compareTo(o.nickname);
+		return this.username.compareTo(o.username);
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }
 

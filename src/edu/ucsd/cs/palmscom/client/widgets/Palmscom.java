@@ -1,42 +1,20 @@
 package edu.ucsd.cs.palmscom.client.widgets;
 
-import org.adamtacy.client.ui.effects.events.EffectCompletedEvent;
-import org.adamtacy.client.ui.effects.events.EffectCompletedHandler;
-import org.adamtacy.client.ui.effects.impl.ChangeColor;
-import org.adamtacy.client.ui.effects.transitionsphysics.EaseInOutTransitionPhysics;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.WindowResizeListener;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
-
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-
-
+import com.google.gwt.user.client.ui.ResizeComposite;
 
 import edu.ucsd.cs.palmscom.client.ClientServiceProxy;
-import edu.ucsd.cs.palmscom.client.Collapsible;
 import edu.ucsd.cs.palmscom.client.MessagePreprocessor;
 import edu.ucsd.cs.palmscom.client.NotificationStateMachine;
-import edu.ucsd.cs.palmscom.client.NotifyStateType;
 import edu.ucsd.cs.palmscom.client.PollingServiceProxyImpl;
 import edu.ucsd.cs.palmscom.client.VisualStateType;
 import edu.ucsd.cs.palmscom.client.events.AddedMessageEvent;
@@ -47,31 +25,40 @@ import edu.ucsd.cs.palmscom.client.events.ReplyButtonClickEvent;
 import edu.ucsd.cs.palmscom.client.events.ReplyButtonClickHandler;
 import edu.ucsd.cs.palmscom.client.events.VisualStateChangeEvent;
 import edu.ucsd.cs.palmscom.client.events.VisualStateChangeHandler;
-
 import edu.ucsd.cs.palmscom.shared.Settings;
+import edu.ucsd.cs.palmscom.shared.User;
 
 public class Palmscom extends ResizeComposite {
 	// Primary layout controls
-	private final CollapsibleFocusPanel root;	
+	private final CollapsiblePanel root;	
 	private final DockLayoutPanel layout = new DockLayoutPanel(Unit.PX);
 	
 	// 
 	private final ClientServiceProxy svc = new PollingServiceProxyImpl();
 	private Settings settings;
+	private final User user;
 	private final NotificationStateMachine nsm = new NotificationStateMachine();
 	
 	// PALMSCom widgets
 	private final HeaderWidget phw = new HeaderWidget();
 	private final HTML defaultHeaderText = new HTML("<div class=\"message\">PALMSCom</div>");	
-	private final OnlineUsersWidget ouw = new OnlineUsersWidget(svc);
-	private final ConversationStreamWidget csw = new ConversationStreamWidget(svc);
-	private final CreateMessageWidget cmw = new CreateMessageWidget(svc);
-	private final CollapsedConversationStreamWidget ccsw = new CollapsedConversationStreamWidget();
+//	private final OnlineUsersWidget ouw = new OnlineUsersWidget(svc);
+//	private final ConversationStreamWidget csw = new ConversationStreamWidget(svc);
+//	private final CreateMessageWidget cmw = new CreateMessageWidget(svc);
+//	private final CollapsedConversationStreamWidget ccsw = new CollapsedConversationStreamWidget();
+	private OnlineUsersWidget ouw;
+	private ConversationStreamWidget csw;
+	private CreateMessageWidget cmw;
+	private CollapsedConversationStreamWidget ccsw;
 	
-	public Palmscom() {						
-		// 1150 + 315 = width of palms + width of palmscom
-		root = new CollapsibleFocusPanel(1150 + 315);		
+	public Palmscom(User user, int collapsPoint) {						
+		root = new CollapsiblePanel(collapsPoint);		
 		initWidget(root);
+		
+		this.user = user;
+		
+		// set primary style
+		this.setStylePrimaryName("palmscom");
 		
 		// setup layout containers
 		root.add(layout);
@@ -81,17 +68,25 @@ public class Palmscom extends ResizeComposite {
 		phw.setStylePrimaryName("com-header");				
 		phw.set(defaultHeaderText);		
 		
-		loadUserSettings();				
+		signIn();
 	}
 
-	private void loadUserSettings() {
+	private void signIn() {
 		// We only want to load one item at the time
 		// to avoid blocking to many connections at the same time.
 				
 		// get user settings
-		svc.getUserSettings(new AsyncCallback<Settings>() {				
+		svc.signIn(user, new AsyncCallback<Settings>() {				
 			@Override
 			public void onSuccess(Settings result) {
+				// make sure we sign out when the window is closed
+				Window.addWindowClosingHandler(new ClosingHandler() {
+					@Override
+					public void onWindowClosing(ClosingEvent event) {
+						svc.singOut(null);
+					}
+				});
+				
 				settings = result;
 				MessagePreprocessor.init(settings);
 				// now we have the settings,
@@ -104,32 +99,31 @@ public class Palmscom extends ResizeComposite {
 			public void onFailure(Throwable caught) {
 				GWT.log("ERROR (getUserSettings): " + caught.getMessage());
 			}
-		});			
+		});
+		
 	}
 	
 	private void setupWidgets() {
-		root.addClickHandler(new ClickHandler() {				
-			@Override
-			public void onClick(ClickEvent event) {
-				//nsm.onUserClick();				
-			}
-		});
+		ouw = new OnlineUsersWidget(svc);
+		csw = new ConversationStreamWidget(svc);
+		cmw = new CreateMessageWidget(svc);
+		ccsw = new CollapsedConversationStreamWidget();
 		
-		root.addFocusHandler(new FocusHandler() {
-			
-			@Override
-			public void onFocus(FocusEvent event) {
-				csw.setHasFocus(true);
-			}
-		});
-		
-		root.addBlurHandler(new BlurHandler() {
-			
-			@Override
-			public void onBlur(BlurEvent event) {
-				csw.setHasFocus(false);				
-			}
-		});
+//		root.addFocusHandler(new FocusHandler() {
+//			
+//			@Override
+//			public void onFocus(FocusEvent event) {
+//				csw.setHasFocus(true);
+//			}
+//		});
+//		
+//		root.addBlurHandler(new BlurHandler() {
+//			
+//			@Override
+//			public void onBlur(BlurEvent event) {
+//				csw.setHasFocus(false);				
+//			}
+//		});
 
 		nsm.addStateChangeHandler(new NotifyStateHandler() {			
 			@Override
@@ -137,7 +131,6 @@ public class Palmscom extends ResizeComposite {
 				ccsw.transition(event.getState());
 			}
 		});
-		
 		cmw.addStateChangeHandler(new VisualStateChangeHandler() {			
 			@Override
 			public void onStateChange(VisualStateChangeEvent event) {				
@@ -157,7 +150,6 @@ public class Palmscom extends ResizeComposite {
 				cmw.setText(event.getNickname() + ": ");
 			}
 		});
-		
 		phw.addClickHandler(new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -204,6 +196,6 @@ public class Palmscom extends ResizeComposite {
 			layout.addSouth(ouw, ouw.getHeight());
 			layout.add(csw);
 			csw.getElement().setAttribute("style", "overflow: auto; position: absolute;");
-		}		
+		}
 	}
 }

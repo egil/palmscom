@@ -12,6 +12,20 @@
   z-index: 1;
 }
 
+.palms .login {
+  text-align: center;
+  float: left;  
+  background: #ccc;
+  padding: 20px;
+  margin: 20px;
+}
+
+.palms .login .textInput {
+  display: block;
+  margin: 10px;
+  padding: 2px;
+}
+
 /**
  * PALMSCom container, main styles for widget.
  */
@@ -140,10 +154,11 @@
 .palmscom.palmscom-vertical.collapsed .com-header .content * {
   overflow: visible;
 }
-
+/*
 .lt-ie9 .palmscom.palmscom-vertical.collapsed .com-header .content {
   filter: progid:DXImageTransform.Microsoft.Matrix(M11=6.123031769111886e-17, M12=-1, M21=1, M22=6.123031769111886e-17, sizingMethod='auto expand');
 }
+*/
 
 /**
  * OnlineUsersWidget styles

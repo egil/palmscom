@@ -87,7 +87,7 @@ public class ConversationStreamWidget extends ConversationStream {
 		row.add(header);
 		
 		// Author
-		HTML author = new HTML(SafeHtmlUtils.htmlEscape(msg.getAuthor().getNickname()));
+		HTML author = new HTML(SafeHtmlUtils.htmlEscape(msg.getAuthor().getFullname()));
 		author.setStylePrimaryName("author");
 		header.add(author);
 		
@@ -106,7 +106,7 @@ public class ConversationStreamWidget extends ConversationStream {
 			replyLink.addClickHandler(new ClickHandler() {			
 				@Override
 				public void onClick(ClickEvent event) {
-					handlerManager.fireEvent(new ReplyButtonClickEvent(msg.getAuthor().getNickname()));
+					handlerManager.fireEvent(new ReplyButtonClickEvent(msg.getAuthor().getFullname()));
 				}
 			});
 			header.add(replyLink);

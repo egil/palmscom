@@ -1,7 +1,9 @@
 package edu.ucsd.cs.palmscom.server;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -13,6 +15,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.PalmscomService;
+import edu.ucsd.cs.palmscom.shared.ServiceException;
 import edu.ucsd.cs.palmscom.shared.Settings;
 import edu.ucsd.cs.palmscom.shared.User;
 import edu.ucsd.cs.palmscom.shared.UserType;
@@ -20,31 +23,16 @@ import edu.ucsd.cs.palmscom.shared.UserType;
 public class PollingServiceImpl extends RemoteServiceServlet implements PalmscomService {
 	private static final long serialVersionUID = -3337342865130794732L;
 	private ArrayList<Message> messages = new ArrayList<Message>();
-	private ArrayList<User> users = new ArrayList<User>();
-	private int userCounter = 0;
+	private ConcurrentHashMap<String, User> users = new ConcurrentHashMap<String, User>();
 	
 	private User getSessionUser() {
-		HttpSession session = getThreadLocalRequest().getSession(true);
-
-		if(session.getAttribute("user") == null) {
-			session.setAttribute("user", users.get(userCounter));
-			userCounter = (userCounter + 1) % 2;		
-		}
-		
-		return (User)session.getAttribute("user");
+		HttpSession session = getThreadLocalRequest().getSession();
+		if(session == null) GWT.log("Missing session");
+		String username = session.getAttribute("username").toString(); 
+		return users.get(username);
 	}
 	
 	public PollingServiceImpl() { 
-		User adm = new User("Barry");
-		adm.setType(UserType.ADMIN);
-		users.add(adm);
-		
-		User sup = new User("Suni");
-		sup.setType(UserType.SUPPORTER);
-		users.add(sup);
-		
-		User homer = new User("Egil");
-		users.add(homer);
 	}
 	
 	// assumes the messages list is sorted
@@ -109,8 +97,8 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 	}
 
 	@Override
-	public List<User> getOnlineUsers() {		
-		return users;
+	public User[] getOnlineUsers() {
+		return users.values().toArray(new User[0]);
 	}
 
 	@Override
@@ -118,13 +106,7 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 		Settings s = new Settings();
 		
 		s.setCurrentUser(getSessionUser());
-		
-		if(s.getCurrentUser().getType() != UserType.USER) {
-			s.getKeywords().add("PALMS");
-			s.getKeywords().add("Dataset");
-			s.getKeywords().add("help");
-		}
-		
+				
 		return s;
 	}
 
@@ -132,6 +114,27 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 	public void saveUserSettings(Settings settings) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Settings signIn(User user) {
+		
+		HttpSession session = getThreadLocalRequest().getSession(true);
+
+		if(session.getAttribute("username") == null) {
+			session.setAttribute("username", user.getUsername());
+			users.put(user.getUsername(), user);
+		}
+		
+		return getUserSettings();
+	}
+
+	@Override
+	public void singOut() {
+		HttpSession session = getThreadLocalRequest().getSession();
+		if(session.getAttribute("username") == null) {
+			users.remove(session.getAttribute("username"));
+		}
 	}
 
 }

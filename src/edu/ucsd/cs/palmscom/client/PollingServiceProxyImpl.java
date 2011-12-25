@@ -1,5 +1,6 @@
 package edu.ucsd.cs.palmscom.client;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class PollingServiceProxyImpl implements ClientServiceProxy {
 	private final PalmscomServiceAsync svc = GWT.create(PalmscomService.class);
 	private Timer refreshMsgs;	
 	private Date lastRefresh;
+	private Timer refreshOnlineUsers;
 	
 	@Override
 	public void sendMessage(Message msg, final AsyncCallback<Void> callback) {
@@ -141,11 +143,11 @@ public class PollingServiceProxyImpl implements ClientServiceProxy {
 	}
 
 	@Override
-	public void getOnlineUsers(final AsyncCallback<List<User>> callback) {
-		svc.getOnlineUsers(new AsyncCallback<List<User>>() {
+	public void getOnlineUsers(final AsyncCallback<User[]> callback) {
+		svc.getOnlineUsers(new AsyncCallback<User[]>() {
 			
 			@Override
-			public void onSuccess(List<User> result) {
+			public void onSuccess(User[] result) {
 				GWT.log("SUCCESS: getOnlineUsers()");
 				callback.onSuccess(result);					
 			}
@@ -203,6 +205,44 @@ public class PollingServiceProxyImpl implements ClientServiceProxy {
 				callback.onFailure(caught);					
 			}		
 		});	
+	}
+
+	@Override
+	public void signIn(User user, final AsyncCallback<Settings> callback) {
+		svc.signIn(user, new AsyncCallback<Settings>() {
+			
+			@Override
+			public void onSuccess(Settings result) {
+				GWT.log("SUCCESS: signIn()");
+				callback.onSuccess(result);	
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log("Failure: signIn()");
+				callback.onFailure(caught);					
+			}		
+		});		
+	}
+
+	@Override
+	public void singOut(final AsyncCallback<Void> callback) {
+		svc.singOut(new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				GWT.log("SUCCESS: singOut()");
+				if(callback != null)
+					callback.onSuccess(result);	
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log("Failure: singOut()");
+				if(callback != null)
+					callback.onFailure(caught);					
+			}		
+		});
 	}
 
 }

@@ -1,23 +1,16 @@
 package edu.ucsd.cs.palmscom. demo;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
 
-import edu.ucsd.cs.palmscom.client.widgets.Palmscom;
-import edu.ucsd.cs.palmscom.client.widgets.WatermarkTextBox;
+import edu.ucsd.cs.palmscom.client.Palmscom;
 import edu.ucsd.cs.palmscom.shared.User;
-import edu.ucsd.cs.palmscom.shared.UserType;
+import edu.ucsd.cs.palmscom.shared.User.UserType;
+import edu.ucsd.cs.widgets.WatermarkTextBox;
 
 public class DemoApp implements EntryPoint {
 	
@@ -48,9 +41,6 @@ public class DemoApp implements EntryPoint {
 				//user.setType(UserType.ADMIN);
 				
 				Palmscom palmscom = new Palmscom(user, collapsPoint);
-				palmscom.addStyleDependentName("horizontal");
-//				palmscom.addStyleDependentName("vertical");
-				RootPanel.get().add(palmscom);		
 			}
 		});
 		

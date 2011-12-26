@@ -12,7 +12,8 @@ public interface PalmscomService extends RemoteService {
 	public void createMessage(Message msg);
 	
 	public Message[] getMessages(int limit);
-	public Message[] getMessages(Date from, int limit);
+	public Message[] getMessagesFrom(Date from, int limit);
+	public Message[] getMessagesTo(Date to);
 	
 	public User[] getOnlineUsers();
 }

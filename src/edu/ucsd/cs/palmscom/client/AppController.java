@@ -56,7 +56,6 @@ public class AppController {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO: show pretty login error message to user
-				GWT.log("ERROR (signIn): " + caught.getMessage());
 			}
 		});
 		

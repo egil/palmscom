@@ -7,6 +7,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import edu.ucsd.cs.palmscom.client.event.NewMessagesEvent;
 import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.MessageCache;
 import edu.ucsd.cs.palmscom.shared.PalmscomService;
@@ -23,6 +24,8 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 	protected ServiceProxy(HandlerManager eventBus) {
 		this.eventBus = eventBus;
 	}
+	
+	public abstract void init();
 	
 	@Override
 	public void getMessages(final int limit, final AsyncCallback<Message[]> callback) {	
@@ -51,10 +54,11 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 					public void onFailure(Throwable caught) {
 						// TODO Display warning/error message, handle condition
 						GWT.log("getMessages(final int limit)", caught);
+						callback.onFailure(caught);
 					}
 				});
 			} else {
-				getMessages(cache.getLast().getDate(), retriveLimit, new AsyncCallback<Message[]>() {
+				getMessagesFrom(cache.getLast().getDate(), retriveLimit, new AsyncCallback<Message[]>() {
 					
 					@Override
 					public void onSuccess(Message[] result) {
@@ -68,6 +72,7 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 						// NOTE: This should never be triggered, as any error is 
 						// handled in the getMessages(final Date from, final int limit, ..)
 						// method call.
+						callback.onFailure(caught);
 					}
 				});
 			}
@@ -75,8 +80,8 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 	}
 	
 	@Override
-	public void getMessages(final Date from, final int limit, final AsyncCallback<Message[]> callback) {
-		service.getMessages(from, limit, new AsyncCallback<Message[]>() {
+	public void getMessagesFrom(final Date from, final int limit, final AsyncCallback<Message[]> callback) {
+		service.getMessagesFrom(from, limit, new AsyncCallback<Message[]>() {
 			
 			@Override
 			public void onSuccess(Message[] result) {
@@ -88,6 +93,26 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 			public void onFailure(Throwable caught) {
 				// TODO Display warning/error message, handle condition
 				GWT.log("getMessages(final Date from, final int limit)", caught);
+				callback.onFailure(caught);
+			}
+		});
+	}
+	
+	@Override
+	public void getMessagesTo(final Date to, final AsyncCallback<Message[]> callback) {
+		service.getMessagesTo(to, new AsyncCallback<Message[]>() {
+			
+			@Override
+			public void onSuccess(Message[] result) {
+				cache.add(ClientMessageDecorator.decorateMessages(result));
+				callback.onSuccess(cache.getTo(to));
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Display warning/error message, handle condition
+				GWT.log("getMessages(final Date from, final int limit)", caught);
+				callback.onFailure(caught);
 			}
 		});
 	}
@@ -107,25 +132,61 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
 				// TODO Display warning/error message, handle condition
 				GWT.log("getOnlineUsers()", caught);
+				callback.onFailure(caught);
 			}
 		});
 	}
 
 	@Override
-	public void createMessage(Message msg, AsyncCallback<Void> callback) {
-		service.createMessage(msg, callback);
+	public void createMessage(Message msg, final AsyncCallback<Void> callback) {
+		service.createMessage(msg, new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				callback.onSuccess(result);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Display warning/error message, handle condition
+				GWT.log("createMessage(Message msg)", caught);
+			}
+		});
 	}
 
 	@Override
-	public void signIn(User user, AsyncCallback<Settings> callback) {
-		service.signIn(user, callback);
+	public void signIn(User user, final AsyncCallback<Settings> callback) {
+		service.signIn(user, new AsyncCallback<Settings>() {
+			
+			@Override
+			public void onSuccess(Settings result) {
+				callback.onSuccess(result);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Display warning/error message, handle condition
+				GWT.log("signIn(User user)", caught);
+			}
+		});
 	}
 
 	@Override
-	public void signOut(AsyncCallback<Void> callback) {
-		service.signOut(callback);
+	public void signOut(final AsyncCallback<Void> callback) {
+		service.signOut(new AsyncCallback<Void>() {
+			
+			@Override
+			public void onSuccess(Void result) {
+				callback.onSuccess(result);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Display warning/error message, handle condition
+				GWT.log("signOut()", caught);
+			}
+		});
 	}
 }

@@ -2,6 +2,7 @@ package edu.ucsd.cs.palmscom.shared;
 
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.Stack;
 
 /*
  * Wrap message cache fields and methods
@@ -62,6 +63,25 @@ public class MessageCache<M extends Message> {
 		}
 
 		return result;
+	}
+
+	public Message[] getTo(Date to) {
+		Stack<M> result = new Stack<M>();
+
+		for (M msg : messages) {
+			if(msg.getDate().compareTo(to) > 0) {
+				result.push(msg);
+			}
+			else {
+				break;
+			}
+		}
+	
+		return result.toArray(new Message[0]);
+	}
+	
+	public M getFirst() {
+		return messages.getFirst();
 	}
 
 	public int size() {

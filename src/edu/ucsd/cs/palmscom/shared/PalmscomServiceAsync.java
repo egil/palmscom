@@ -8,10 +8,12 @@ public interface PalmscomServiceAsync {
 	void createMessage(Message msg, AsyncCallback<Void> callback);
 
 	void getMessages(int limit, AsyncCallback<Message[]> callback);
-	void getMessages(Date from, int limit, AsyncCallback<Message[]> asyncCallback);
+	void getMessagesFrom(Date from, int limit, AsyncCallback<Message[]> asyncCallback);
+	void getMessagesTo(Date to, AsyncCallback<Message[]> callback);
 	
 	void getOnlineUsers(AsyncCallback<User[]> callback);
 	
 	void signIn(User user, AsyncCallback<Settings> callback);
 	void signOut(AsyncCallback<Void> callback);
+
 }

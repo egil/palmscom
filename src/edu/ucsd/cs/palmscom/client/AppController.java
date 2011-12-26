@@ -1,31 +1,89 @@
 package edu.ucsd.cs.palmscom.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
+import com.google.gwt.user.client.Window.ClosingHandler;
 
+import edu.ucsd.cs.palmscom.client.presenter.CollapsedPresenter;
+import edu.ucsd.cs.palmscom.client.presenter.ExpandedPresenter;
+import edu.ucsd.cs.palmscom.client.presenter.Presenter;
 import edu.ucsd.cs.palmscom.shared.PalmscomServiceAsync;
+import edu.ucsd.cs.palmscom.shared.Settings;
 import edu.ucsd.cs.palmscom.shared.User;
+import edu.ucsd.cs.widgets.CollapseStateChangeEvent;
+import edu.ucsd.cs.widgets.CollapseStateChangeEventHandler;
+import edu.ucsd.cs.widgets.CollapsiblePanel;
+import edu.ucsd.cs.widgets.CollapsiblePanel.CollapseState;
 
 public class AppController {
-	private final User currentUser;
-	private final PalmscomServiceAsync svc;
-	private final HandlerManager bus;
-	
+	private final PalmscomServiceAsync service;
+	private final HandlerManager eventBus;
+	private final CollapsiblePanel container;
 
-	public AppController(PalmscomServiceAsync service, HandlerManager eventBus, User currentUser, int collapsPoint) {
-		this.currentUser = currentUser;
-		this.svc = service;
-		this.bus = eventBus;
-		// TODO Auto-generated constructor stub
+	public AppController(PalmscomServiceAsync service, HandlerManager eventBus) {
+		this.service = service;
+		this.eventBus = eventBus;
+		this.container = new CollapsiblePanel();
+		bind();
 	}
 
+	public void go(final RootPanel rootPanel, User currentUser, int collapsPoint) {
+		this.container.setCollapsPoint(collapsPoint);
+		AppState.getInstance().setUser(currentUser);
+		
+		// sign in to service, get users settings
+		service.signIn(currentUser, new AsyncCallback<Settings>() {
+			
+			@Override
+			public void onSuccess(Settings settings) {
+				// make sure we sign out when the window is closed
+				Window.addWindowClosingHandler(new ClosingHandler() {
+					@Override
+					public void onWindowClosing(ClosingEvent event) {
+						service.singOut(null);
+					}
+				});
+				
+				AppState.getInstance().setSettings(settings);
+				
+				rootPanel.add(container);	
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO: show pretty login error message to user
+				GWT.log("ERROR (signIn): " + caught.getMessage());
+			}
+		});
+		
+	}
+	
 	private void bind() {
+		// Browser width change 
+		container.addHandler(new CollapseStateChangeEventHandler() {
+			@Override
+			public void onChange(CollapseStateChangeEvent event) {
+				CollapseState state = event.getState();
+				onStateChange(state);
+			}
+		}, CollapseStateChangeEvent.TYPE);
 		
 	}
 	
-	public void go(RootPanel rootPanel) {
-		// TODO Auto-generated method stub
+	private void onStateChange(CollapseState state) {
+		Presenter presenter;
 		
+		if(state == CollapseState.COLLAPSED) {
+			presenter = new CollapsedPresenter(service, eventBus);
+		} else {
+			presenter = new ExpandedPresenter(service, eventBus);			
+		}
+		
+		presenter.go(container);
 	}
 
 }

@@ -10,10 +10,10 @@ public class Palmscom {
 
 	public Palmscom(User currentUser, int collapsPoint) {
 		// TODO Auto-generated method stub
-	    PalmscomServiceAsync rpcService = new PollingServiceProxy(); //GWT.create(ContactsService.class);
+	    PalmscomServiceAsync service = new PollingServiceProxy(); //GWT.create(ContactsService.class);
 	    HandlerManager eventBus = new HandlerManager(null);
-	    AppController appViewer = new AppController(rpcService, eventBus, currentUser, collapsPoint);
-	    appViewer.go(RootPanel.get());
+	    AppController appViewer = new AppController(service, eventBus);
+	    appViewer.go(RootPanel.get(), currentUser, collapsPoint);
 	}
 
 }

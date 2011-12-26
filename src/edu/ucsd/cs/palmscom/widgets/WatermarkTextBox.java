@@ -1,4 +1,4 @@
-package edu.ucsd.cs.widgets;
+package edu.ucsd.cs.palmscom.widgets;
 
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;

@@ -1,22 +1,21 @@
 package edu.ucsd.cs.palmscom.server;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import edu.ucsd.cs.palmscom.shared.Message;
+import edu.ucsd.cs.palmscom.shared.MessageCache;
 import edu.ucsd.cs.palmscom.shared.PalmscomService;
 import edu.ucsd.cs.palmscom.shared.Settings;
 import edu.ucsd.cs.palmscom.shared.User;
 
-public class PollingServiceImpl extends RemoteServiceServlet implements PalmscomService {
+public class InMemoryPollingServiceImpl extends RemoteServiceServlet implements PalmscomService {
 	private static final long serialVersionUID = -3337342865130794732L;
-	private ArrayList<Message> messages = new ArrayList<Message>();
+	private final MessageCache<Message> messageCache = new MessageCache<Message>(); 
 	private ConcurrentHashMap<String, User> users = new ConcurrentHashMap<String, User>();
 	
 	private User getSessionUser() {
@@ -25,71 +24,44 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 		return users.get(username);
 	}
 	
-	public PollingServiceImpl() { 
+	public InMemoryPollingServiceImpl() { 
 	}
-	
-	// assumes the messages list is sorted
-	private int indexOfLargerOrEqual(Date date) {				
-		if(messages.size() == 0)
-			return -1;
-		
-		int res = -1;
-		
-		
-		for(int i = 0; i < messages.size(); i++) {
-			if(messages.get(i).getDate().compareTo(date) > 0){
-				res = i;
-				break;
-			}
-		}
-		
-		return res;
-	}	
 	
 	@Override
 	public void createMessage(Message msg) {
 		msg.setDate(new Date());
-		msg.setID(messages.size());
+		msg.setID(messageCache.size());
 		msg.setAuthor(getSessionUser());		
-		messages.add(msg);
+		messageCache.add(msg);
 	}
 
 	@Override
 	public Message[] getMessages(int limit) {
-		ArrayList<Message> res = new ArrayList<Message>();
-		int from = limit < messages.size() ? limit : 0;
-		int to = messages.size();
-		res.addAll(messages.subList(from, to));
-		return res.toArray(new Message[0]);
+		return messageCache.getTo(limit);
 	}
 
 	@Override
-	public Message[] getMessages(Date to) {
-		ArrayList<Message> res = new ArrayList<Message>();
-		int too = indexOfLargerOrEqual(to);
-		if(too >= 0){
-			res.addAll(messages.subList(too, messages.size()));
-		}
-		
-		return res.toArray(new Message[0]);
+	public Message[] getMessages(Date from, int limit) {
+		return messageCache.getFrom(from, limit);
 	}
+
 	
 	@Override
 	public User[] getOnlineUsers() {
 		return users.values().toArray(new User[0]);
 	}
 
-	@Override
-	public Settings getUserSettings() {
-		Settings s = new Settings();
-		s.setCurrentUser(getSessionUser());
-		return s;
-	}
-
-	@Override
-	public void updateUserSettings(Settings settings) {
-		// TODO Auto-generated method stub
-	}
+//	@Override
+//	public Settings getUserSettings() {
+//		Settings s = new Settings();
+//		s.setCurrentUser(getSessionUser());
+//		return s;
+//	}
+//
+//	@Override
+//	public void updateUserSettings(Settings settings) {
+//		// TODO Auto-generated method stub
+//	}
 
 	@Override
 	public Settings signIn(User user) {
@@ -100,14 +72,15 @@ public class PollingServiceImpl extends RemoteServiceServlet implements Palmscom
 			users.put(user.getUsername(), user);
 		}
 		
-		return getUserSettings();
+		return new Settings();
 	}
 
 	@Override
-	public void singOut() {
+	public void signOut() {
 		HttpSession session = getThreadLocalRequest().getSession();
 		if(session.getAttribute("username") == null) {
 			users.remove(session.getAttribute("username"));
 		}
 	}
+
 }

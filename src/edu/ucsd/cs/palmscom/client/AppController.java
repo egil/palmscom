@@ -14,10 +14,10 @@ import edu.ucsd.cs.palmscom.client.presenter.Presenter;
 import edu.ucsd.cs.palmscom.shared.PalmscomServiceAsync;
 import edu.ucsd.cs.palmscom.shared.Settings;
 import edu.ucsd.cs.palmscom.shared.User;
-import edu.ucsd.cs.widgets.CollapseStateChangeEvent;
-import edu.ucsd.cs.widgets.CollapseStateChangeEventHandler;
-import edu.ucsd.cs.widgets.CollapsiblePanel;
-import edu.ucsd.cs.widgets.CollapsiblePanel.CollapseState;
+import edu.ucsd.cs.palmscom.widgets.CollapseStateChangeEvent;
+import edu.ucsd.cs.palmscom.widgets.CollapseStateChangeEventHandler;
+import edu.ucsd.cs.palmscom.widgets.CollapsiblePanel;
+import edu.ucsd.cs.palmscom.widgets.CollapsiblePanel.CollapseState;
 
 public class AppController {
 	private final PalmscomServiceAsync service;
@@ -44,7 +44,7 @@ public class AppController {
 				Window.addWindowClosingHandler(new ClosingHandler() {
 					@Override
 					public void onWindowClosing(ClosingEvent event) {
-						service.singOut(null);
+						service.signOut(null);
 					}
 				});
 				

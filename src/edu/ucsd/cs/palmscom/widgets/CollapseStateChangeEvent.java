@@ -1,8 +1,8 @@
-package edu.ucsd.cs.widgets;
+package edu.ucsd.cs.palmscom.widgets;
 
 import com.google.gwt.event.shared.GwtEvent;
 
-import edu.ucsd.cs.widgets.CollapsiblePanel.CollapseState;
+import edu.ucsd.cs.palmscom.widgets.CollapsiblePanel.CollapseState;
 
 public class CollapseStateChangeEvent extends GwtEvent<CollapseStateChangeEventHandler> {
 	

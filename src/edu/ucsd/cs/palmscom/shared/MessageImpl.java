@@ -60,4 +60,8 @@ public class MessageImpl implements Message {
 		this.moi = isMessageOfIntrest;
 	}
 
+	@Override
+	public int compareTo(Message other) {
+		return this.getDate().compareTo(other.getDate());
+	}
 }

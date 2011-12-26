@@ -1,4 +1,4 @@
-package edu.ucsd.cs.widgets;
+package edu.ucsd.cs.palmscom.widgets;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.WindowResizeListener;

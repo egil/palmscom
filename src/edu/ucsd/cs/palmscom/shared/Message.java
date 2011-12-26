@@ -3,7 +3,7 @@ package edu.ucsd.cs.palmscom.shared;
 import java.io.Serializable;
 import java.util.Date;
 
-public interface Message extends Serializable {	
+public interface Message extends Serializable, Comparable<Message> {	
 	public int getID();
 	public void setID(int iD);	
 	public Date getDate();	

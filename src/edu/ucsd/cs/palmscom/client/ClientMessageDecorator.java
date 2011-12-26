@@ -38,6 +38,14 @@ public class ClientMessageDecorator extends MessageDecorator {
 		return super.getText();
 	}
 	
+	public static ClientMessageDecorator[] decorateMessages(Message[] messages) {
+		ClientMessageDecorator[] result = new ClientMessageDecorator[messages.length];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = new ClientMessageDecorator(messages[i]);
+		}
+		return result;
+	}
+	
 	private static class Preprocessor {
 		private static RegExp userMatcher;
 		private static RegExp keywordMatcher;

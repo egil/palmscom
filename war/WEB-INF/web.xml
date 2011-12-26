@@ -8,7 +8,7 @@
   <!-- Servlets -->
   <servlet>
     <servlet-name>serviceServlet</servlet-name>
-    <servlet-class>edu.ucsd.cs.palmscom.server.PollingServiceImpl</servlet-class>
+    <servlet-class>edu.ucsd.cs.palmscom.server.InMemoryPollingServiceImpl</servlet-class>
   </servlet>
   
   <servlet-mapping>

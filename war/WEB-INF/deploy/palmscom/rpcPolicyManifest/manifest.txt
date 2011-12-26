@@ -1,2 +1,3 @@
 # Module palmscom
 # RPC service class, partial path of RPC policy file
+edu.ucsd.cs.palmscom.shared.PalmscomService, F5A354B5CD8F96E15FCEA28DE9D89480.gwt.rpc

@@ -20,7 +20,7 @@ public class PollingServiceProxy extends ServiceProxy {
 	}
 
 	@Override
-	public void init() {
+	public void listen() {
 		enableAutoPollingMessages();
 		enableAutoPollingUsers();
 	}

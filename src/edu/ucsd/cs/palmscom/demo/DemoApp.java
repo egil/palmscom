@@ -52,7 +52,6 @@ public class DemoApp implements EntryPoint {
 		loginPanel.add(userName);
 		loginPanel.add(fullName);
 		loginPanel.add(login);
-		
 	}
 
 }

@@ -7,7 +7,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import edu.ucsd.cs.palmscom.client.event.NewMessagesEvent;
 import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.MessageCache;
 import edu.ucsd.cs.palmscom.shared.PalmscomService;
@@ -25,7 +24,7 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 		this.eventBus = eventBus;
 	}
 	
-	public abstract void init();
+	public abstract void listen();
 	
 	@Override
 	public void getMessages(final int limit, final AsyncCallback<Message[]> callback) {	

@@ -11,7 +11,7 @@ public class Palmscom {
 	public Palmscom(User currentUser, int collapsPoint) {
 		// TODO Auto-generated method stub
 	    HandlerManager eventBus = new HandlerManager(null);
-	    PalmscomServiceAsync service = new PollingServiceProxy(eventBus);
+	    ServiceProxy service = new PollingServiceProxy(eventBus);
 	    AppController appViewer = new AppController(service, eventBus);
 	    appViewer.go(RootPanel.get(), currentUser, collapsPoint);
 	}

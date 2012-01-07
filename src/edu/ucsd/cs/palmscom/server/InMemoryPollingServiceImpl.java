@@ -37,17 +37,17 @@ public class InMemoryPollingServiceImpl extends RemoteServiceServlet implements 
 
 	@Override
 	public Message[] getMessages(int limit) {
-		return messageCache.getTo(limit);
+		return messageCache.getTo(limit).toArray(new Message[0]);
 	}
 
 	@Override
 	public Message[] getMessagesFrom(Date from, int limit) {
-		return messageCache.getFrom(from, limit);
+		return messageCache.getFrom(from, limit).toArray(new Message[0]);
 	}
 	
 	@Override
 	public Message[] getMessagesTo(Date to) {
-		return messageCache.getTo(to);
+		return messageCache.getTo(to).toArray(new Message[0]);
 	}
 
 	

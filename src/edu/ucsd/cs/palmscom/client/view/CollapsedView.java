@@ -1,29 +1,35 @@
 package edu.ucsd.cs.palmscom.client.view;
 
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 
 import edu.ucsd.cs.palmscom.client.presenter.CollapsedPresenter;
 
-public class CollapsedView implements CollapsedPresenter.Display {
+public class CollapsedView extends View implements CollapsedPresenter.Display {
 
-	@Override
-	public Widget asWidget() {
-		// TODO Auto-generated method stub
-		return null;
+	private final FlowPanel header = new FlowPanel();
+	private final HTML toggler = new HTML();
+	private final HTML content = new HTML();
+	
+	public CollapsedView() {
+		initWidget(header);
+		
+		// configure and setup
+		header.setStylePrimaryName("header");
+		toggler.setStylePrimaryName("toggler");
+		header.add(toggler);
 	}
 
 	@Override
-	public HasClickHandlers getReplyButton() {
-		// TODO Auto-generated method stub
-		return null;
+	public HasClickHandlers getToggleButton() {
+		return toggler;
 	}
 
 	@Override
-	public int getClickedRow(ClickEvent event) {
+	public void setContent(String text) {
 		// TODO Auto-generated method stub
-		return 0;
+		
 	}
 
 }

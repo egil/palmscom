@@ -1,7 +1,9 @@
 package edu.ucsd.cs.palmscom.client;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
@@ -14,7 +16,7 @@ import edu.ucsd.cs.palmscom.shared.PalmscomServiceAsync;
 import edu.ucsd.cs.palmscom.shared.Settings;
 import edu.ucsd.cs.palmscom.shared.User;
 
-public abstract class ServiceProxy implements PalmscomServiceAsync {
+public abstract class ServiceProxy {
 	protected final PalmscomServiceAsync service = GWT.create(PalmscomService.class);;
 	protected final MessageCache<ClientMessageDecorator> cache = new MessageCache<ClientMessageDecorator>();
 	protected final HandlerManager eventBus;
@@ -26,8 +28,7 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 	
 	public abstract void listen();
 	
-	@Override
-	public void getMessages(final int limit, final AsyncCallback<Message[]> callback) {	
+	public void getMessages(final int limit, final AsyncCallback<List<ClientMessageDecorator>> callback) {	
 		if(limit < cache.size()) {
 			callback.onSuccess(cache.getTo(limit));
 			return;
@@ -38,14 +39,14 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 			int retriveLimit = limit - cache.size();
 			
 			// if there is no messages in the list,
-			// we have not retrived any messages, so we do a regular
+			// we have not retrieved any messages, so we do a regular
 			// getMessages(limit), otherwise we get older messages
 			if(retriveLimit == limit) {
 				service.getMessages(retriveLimit, new AsyncCallback<Message[]>() {
 					
 					@Override
 					public void onSuccess(Message[] result) {
-						cache.add(ClientMessageDecorator.decorateMessages(result));
+						cache.add(Arrays.asList(ClientMessageDecorator.decorateMessages(result)));
 						callback.onSuccess(cache.getTo(limit));
 					}
 					
@@ -57,10 +58,10 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 					}
 				});
 			} else {
-				getMessagesFrom(cache.getLast().getDate(), retriveLimit, new AsyncCallback<Message[]>() {
+				getMessagesFrom(cache.getLast().getDate(), retriveLimit, new AsyncCallback<List<ClientMessageDecorator>>() {
 					
 					@Override
-					public void onSuccess(Message[] result) {
+					public void onSuccess(List<ClientMessageDecorator> result) {
 						// NOTE: result message already added to cache in the 
 						// getMessages(final Date from, final int limit, ..) method call
 						callback.onSuccess(cache.getTo(limit));
@@ -78,13 +79,12 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 		}
 	}
 	
-	@Override
-	public void getMessagesFrom(final Date from, final int limit, final AsyncCallback<Message[]> callback) {
+	public void getMessagesFrom(final Date from, final int limit, final AsyncCallback<List<ClientMessageDecorator>> callback) {
 		service.getMessagesFrom(from, limit, new AsyncCallback<Message[]>() {
 			
 			@Override
 			public void onSuccess(Message[] result) {
-				cache.add(ClientMessageDecorator.decorateMessages(result));
+				cache.add(Arrays.asList(ClientMessageDecorator.decorateMessages(result)));
 				callback.onSuccess(cache.getFrom(from, limit));
 			}
 			
@@ -97,13 +97,12 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 		});
 	}
 	
-	@Override
-	public void getMessagesTo(final Date to, final AsyncCallback<Message[]> callback) {
+	public void getMessagesTo(final Date to, final AsyncCallback<List<ClientMessageDecorator>> callback) {
 		service.getMessagesTo(to, new AsyncCallback<Message[]>() {
 			
 			@Override
 			public void onSuccess(Message[] result) {
-				cache.add(ClientMessageDecorator.decorateMessages(result));
+				cache.add(Arrays.asList(ClientMessageDecorator.decorateMessages(result)));
 				callback.onSuccess(cache.getTo(to));
 			}
 			
@@ -116,7 +115,6 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 		});
 	}
 
-	@Override
 	public void getOnlineUsers(final AsyncCallback<User[]> callback) {
 		service.getOnlineUsers(new AsyncCallback<User[]>() {
 		
@@ -138,7 +136,6 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 		});
 	}
 
-	@Override
 	public void createMessage(Message msg, final AsyncCallback<Void> callback) {
 		service.createMessage(msg, new AsyncCallback<Void>() {
 			
@@ -155,7 +152,6 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 		});
 	}
 
-	@Override
 	public void signIn(User user, final AsyncCallback<Settings> callback) {
 		service.signIn(user, new AsyncCallback<Settings>() {
 			
@@ -172,13 +168,12 @@ public abstract class ServiceProxy implements PalmscomServiceAsync {
 		});
 	}
 
-	@Override
-	public void signOut(final AsyncCallback<Void> callback) {
+	public void signOut() {
 		service.signOut(new AsyncCallback<Void>() {
 			
 			@Override
-			public void onSuccess(Void result) {
-				callback.onSuccess(result);
+			public void onSuccess(Void result) { 
+				GWT.log("signOut() success");
 			}
 			
 			@Override

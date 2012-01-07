@@ -1,5 +1,6 @@
 package edu.ucsd.cs.palmscom.client;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.ClosingEvent;
@@ -25,11 +26,17 @@ public class AppController {
 	private final ServiceProxy service;
 	private final HandlerManager eventBus;
 	private final CollapsiblePanel container;
-
+	private Presenter<?> expandedPresenter;
+	private Presenter<?> collapsedPresenter;
+	
 	public AppController(ServiceProxy service, HandlerManager eventBus) {
 		this.service = service;
 		this.eventBus = eventBus;
 		this.container = new CollapsiblePanel();
+		
+		// set main stylesheets
+		container.setStylePrimaryName("palmscom");
+		
 		bind();
 	}
 
@@ -38,7 +45,7 @@ public class AppController {
 		AppState.getInstance().setUser(currentUser);
 		
 		// sign in to service, get users settings
-		service.signIn(currentUser, new AsyncCallback<Settings>() {
+		service.signIn(currentUser, new SimpleAsyncCallback<Settings>() {
 			
 			@Override
 			public void onSuccess(Settings settings) {
@@ -46,14 +53,11 @@ public class AppController {
 				Window.addWindowClosingHandler(new ClosingHandler() {
 					@Override
 					public void onWindowClosing(ClosingEvent event) {
-						service.signOut(null);
+						service.signOut();
 					}
 				});
 				
 				AppState.getInstance().setSettings(settings);
-				
-				// set main stylesheets
-				container.setStylePrimaryName("palmscom");
 				
 				// set palmscom collapsed orientation
 				container.addStyleDependentName(AppState.getInstance().getSettings()
@@ -62,12 +66,12 @@ public class AppController {
 				// Start listening for new messages or changes in users list
 				service.listen();
 				
-				rootPanel.add(container);	
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO: show pretty login error message to user
+				// initialize the presenters
+				collapsedPresenter = new CollapsedPresenter(service, eventBus, new CollapsedView(), container);
+				expandedPresenter = new ExpandedPresenter(service, eventBus, new ExpandedView(), container);
+
+				// adding container to rootPanel triggers an CollapseStateChangeEvent
+				rootPanel.add(container);
 			}
 		});
 		
@@ -87,21 +91,14 @@ public class AppController {
 			@Override
 			public void onToggleButtonClicked(ToggleButtonClickedEvent event) {
 				container.toggleVisualState();
-				onStateChange();
 			}
 		});
 	}
 	
 	private void onStateChange() {
-		Presenter presenter;
-		
-		if(container.getVisualState() == CollapseState.COLLAPSED) {
-			presenter = new CollapsedPresenter(service, eventBus, new CollapsedView());
-		} else {
-			presenter = new ExpandedPresenter(service, eventBus, new ExpandedView());			
-		}
-		
-		presenter.go(container);
+		GWT.log("onStateChange triggered: " + container.getVisualState().toString());
+		expandedPresenter.setVisible(container.getVisualState() == CollapseState.EXPANDED);
+		collapsedPresenter.setVisible(container.getVisualState() == CollapseState.COLLAPSED);
 	}
 
 }

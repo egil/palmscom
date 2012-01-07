@@ -30,6 +30,14 @@ public class ClientMessageDecorator extends MessageDecorator {
 		return "id-" + this.getID();
 	}
 	
+	@Override
+	public Boolean getIsMessageOfIntrest() {
+		if(!hasPreprocessed) {
+			Preprocessor.Execute(this);
+		}
+		return super.getIsMessageOfIntrest();
+	}
+	
 	@Override 
 	public String getText() {
 		if(!hasPreprocessed) {
@@ -54,9 +62,16 @@ public class ClientMessageDecorator extends MessageDecorator {
 			if(userMatcher == null) {
 				Preprocessor.init();
 			}
+			// set this flag here to avoid endless loops
+			msg.hasPreprocessed = true;
 			
 			String text = msg.getText().trim();
 			text = SafeHtmlUtils.htmlEscape(text);
+			
+			// set moi to false by default (otherwise it is null)
+			msg.setIsMessageOfIntrest(false);
+
+			Settings settings = AppState.getInstance().getSettings();
 			
 			// only highlight message if it is from somebody else
 			if(!msg.isOwnMessage()) {
@@ -64,18 +79,18 @@ public class ClientMessageDecorator extends MessageDecorator {
 					msg.setIsMessageOfIntrest(true);
 				}
 				userMatcher.setLastIndex(0);
-				
-				if(keywordMatcher.test(text)) {
-					msg.setIsMessageOfIntrest(true);
+
+				if(settings.getKeywords().size() > 0) {
+					if(keywordMatcher.test(text)) {
+						msg.setIsMessageOfIntrest(true);
+					}
+					keywordMatcher.setLastIndex(0);
 				}
-				keywordMatcher.setLastIndex(0);
 				
 				text = userMatcher.replace(text, "$2<span class=\"user\">$3</span>$4$5");
 				userMatcher.setLastIndex(0);
 			}
 
-			// highlight keywords
-			Settings settings = AppState.getInstance().getSettings();
 			if(settings.getKeywords().size() > 0) {
 				text = keywordMatcher.replace(text, "$2<span class=\"keyword\">$3</span>$4$5");
 				keywordMatcher.setLastIndex(0);
@@ -84,8 +99,6 @@ public class ClientMessageDecorator extends MessageDecorator {
 			GWT.log("personalizeMessage: " + (new Date().toString()) + " moi = " + msg.getIsMessageOfIntrest());
 			
 			msg.setText(text);
-			
-			msg.hasPreprocessed = true;
 		}
 		
 		private static void init() {
@@ -93,8 +106,11 @@ public class ClientMessageDecorator extends MessageDecorator {
 			// first name, last name, and full name.
 			User user = AppState.getInstance().getUser();
 			String options = user.getUsername() + "|" + user.getFullname();
-			for (String part : user.getFullname().split("\\s+")) {
-				options += "|" + part;
+			String[] parts = user.getFullname().split("\\s+");
+			if(parts.length > 1) {
+				for (String part : parts) {
+					options += "|" + part;
+				}
 			}
 	
 			userMatcher = RegExp.compile("((^|\\s+)(" + options + ")([\\W]*?)(\\s+|$))", "gi");
@@ -105,7 +121,9 @@ public class ClientMessageDecorator extends MessageDecorator {
 			for(int i = 0; i < settings.getKeywords().size(); i++) {
 				options += i == 0 ? settings.getKeywords().get(i) : "|" + settings.getKeywords().get(i);
 			}
-			keywordMatcher = RegExp.compile("((^|\\s+)(" + options + ")([\\W]*?)(\\s+|$))", "gi");
+			if(!options.isEmpty()) {
+				keywordMatcher = RegExp.compile("((^|\\s+)(" + options + ")([\\W]*?)(\\s+|$))", "gi");
+			}
 		}
 	}
 }

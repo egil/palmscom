@@ -1,5 +1,7 @@
 package edu.ucsd.cs.palmscom.client;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Timer;
@@ -31,11 +33,13 @@ public class PollingServiceProxy extends ServiceProxy {
 		if(refreshMsgs != null)	return;
 		
 		// create callback class
-		final AsyncCallback<Message[]> callback = new AsyncCallback<Message[]>() {
+		final AsyncCallback<List<ClientMessageDecorator>> callback = new AsyncCallback<List<ClientMessageDecorator>>() {
 			
 			@Override
-			public void onSuccess(Message[] result) {	
-				eventBus.fireEvent(new NewMessagesEvent(result));
+			public void onSuccess(List<ClientMessageDecorator> result) {
+				if(result.size() > 0) {
+					eventBus.fireEvent(new NewMessagesEvent(result));
+				}
 				// look updates in 1 sec
 				refreshMsgs.schedule(pollingInterval);
 			}
@@ -45,7 +49,7 @@ public class PollingServiceProxy extends ServiceProxy {
 				GWT.log("enableAutoPollingMessages(to)", caught);
 				// look updates in 1 sec
 				refreshMsgs.schedule(pollingInterval);
-			}					
+			}
 		};
 		
 		refreshMsgs = new Timer() {			
@@ -59,7 +63,6 @@ public class PollingServiceProxy extends ServiceProxy {
 			}
 		};
 				
-		// look updates in 1 sec
 		refreshMsgs.schedule(pollingInterval);
 	}
 
@@ -73,7 +76,7 @@ public class PollingServiceProxy extends ServiceProxy {
 		final AsyncCallback<User[]> callback = new AsyncCallback<User[]>() {
 			
 			@Override
-			public void onSuccess(User[] result) {	
+			public void onSuccess(User[] result) {
 				eventBus.fireEvent(new UpdateOnlineUserListEvent(result));
 				// look updates in 1 sec
 				refreshOnlineUsers.schedule(pollingInterval);
@@ -94,7 +97,6 @@ public class PollingServiceProxy extends ServiceProxy {
 			}
 		};
 				
-		// look updates in 1 sec
 		refreshOnlineUsers.schedule(pollingInterval);
 	}
 	

@@ -41,7 +41,10 @@ public class CollapsiblePanel extends SimplePanel implements RequiresResize, Pro
 	@Override
 	public void onLoad(){ 
 		super.onLoad();
-		state = CollapseState.EXPANDED;
+		// init state to opposite of what we want,
+		// that way handleResize will set all properties
+		// correctly, and trigger the event other widgets might need
+		state = Window.getClientWidth() < getCollapsPoint() ? CollapseState.EXPANDED : CollapseState.COLLAPSED;
 		handleResize();		
 	}
 

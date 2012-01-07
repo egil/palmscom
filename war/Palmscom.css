@@ -91,15 +91,15 @@
 /**
  * PALMSCom header, sits at top, no matter state (collapsed/expanded)
  */
-.palmscom .com-header {
+.palmscom .header {
   border-bottom: 1px solid #eee;
 }
 
-.palmscom.palmscom-horizontal.collapsed .com-header {
+.palmscom.palmscom-horizontal.collapsed .header {
   border-bottom: none;
 }
 
-.palmscom .com-header .toggler {  
+.palmscom .header .toggler {  
   border-left: 1px solid #eee;  
   cursor: pointer;
   height: 20px;
@@ -110,36 +110,36 @@
   position: absolute;  
 }
 
-.palmscom .com-header .content {    
+.palmscom .header .content {    
     height: 30px;
     width: 268px;
   /*padding: 5px;*/
   /*margin: 0 5px;*/   
 } 
-.palmscom .com-header .content * {
+.palmscom .header .content * {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.palmscom.palmscom-horizontal .com-header .toggler {
+.palmscom.palmscom-horizontal .header .toggler {
   background: #fff url('img/arrows.png') no-repeat -1px 0px;
 }
 
-.palmscom.palmscom-horizontal.collapsed .com-header .toggler {
+.palmscom.palmscom-horizontal.collapsed .header .toggler {
   background: #fff url('img/arrows.png') no-repeat -29px -29px;
 }
 
-.palmscom.palmscom-vertical .com-header .toggler {
+.palmscom.palmscom-vertical .header .toggler {
   background: #fff url('img/arrows.png') no-repeat -28px -1px;
 }
 
-.palmscom.palmscom-vertical.collapsed .com-header .toggler {
+.palmscom.palmscom-vertical.collapsed .header .toggler {
   border-bottom: 1px solid #eee;
   background: #fff url('img/arrows.png') no-repeat -1px -30px;
 }
 
-.palmscom.palmscom-vertical.collapsed .com-header .content {  
+.palmscom.palmscom-vertical.collapsed .header .content {  
   margin: 36px 0 0 0; 
   height: auto;
   width: 30px;
@@ -151,11 +151,11 @@
   zoom: 1;
 }
 
-.palmscom.palmscom-vertical.collapsed .com-header .content * {
+.palmscom.palmscom-vertical.collapsed .header .content * {
   overflow: visible;
 }
 /*
-.lt-ie9 .palmscom.palmscom-vertical.collapsed .com-header .content {
+.lt-ie9 .palmscom.palmscom-vertical.collapsed .header .content {
   filter: progid:DXImageTransform.Microsoft.Matrix(M11=6.123031769111886e-17, M12=-1, M21=1, M22=6.123031769111886e-17, sizingMethod='auto expand');
 }
 */
@@ -175,7 +175,7 @@
 .palmscom .online-users ul {
   text-align: left;
   line-height: 16px;
-  margin: 0 10px 0 25px;
+  margin: 10px 10px 10px 25px;
   padding: 0;
 }
 
@@ -226,7 +226,7 @@
  * Conversation stream styles
  */
 
-.stream {
+.palmscom .stream {
   /*margin: 5px 10px;*/
   position: absolute;
   top: 0px;
@@ -236,19 +236,20 @@
   clear: both;
 }
 
-.stream .header {
+.palmscom .stream .header {
   border: none;
   clear: both; 
   line-height: 20px;
   height: 18px;
 }
 
-.stream .header div {
+.palmscom .stream .header div {
   float: left;
 } 
 
-.stream .message {
+.palmscom .stream .message {
   background: #f9f9f9;
+  cursor: pointer;
   margin: 5px;
   padding: 5px;
 }
@@ -258,69 +259,70 @@
   padding-left: 5px;
 }
 
-.stream .message .reply {
+.palmscom .stream .message .reply {
   cursor: pointer;
   float: left;
   padding-left: 5px;
 }
 
-.stream .reply a {
+.palmscom .stream .reply a {
   color: #64b4ff; 
 }
 
-.stream .message .text {
+.palmscom .stream .message .text {
   clear: both;  
 }
 
-.message .time, .message .author, .message .reply {
+.palmscom .message .time, .message .author, .message .reply {
   color: #777;
   font-style: normal;
   white-space: nowrap;
 }
 
-.message.own { 
+.palmscom .message.own { 
   /*background: #fff;*/
+  cursor: default;
 }
 
-.message.moi {
+.palmscom .message.moi {
   background: #ffffd8;
 }
 
-.message .author {
+.palmscom .message .author {
   color: #133fcf;
   display: inline;
   font-size: 12px;
   font-weight: bold;
 }
 
-.message.own .author {
+.palmscom .message.own .author {
   color: #666;
 }
 
-.message .text {
+.palmscom .message .text {
   color: #333;
   margin: 0;
 }
 
-.message.own .text {
+.palmscom .message.own .text {
   font-style: italic;
 }
 
-.message .text .user {
+.palmscom .message .text .user {
   /*color: #931818;*/
   font-weight: bold;
 }
 
-.message .text .keyword {
+.palmscom .message .text .keyword {
  /* color: #181d93;*/
   font-weight: bold;
 }
 
-.message-notify {
+.palmscom .message-notify {
   background: #ffffd8;
 }
 
-.com-header .message {
+.palmscom .header .message {
   padding: 6px 10px;
 }
 

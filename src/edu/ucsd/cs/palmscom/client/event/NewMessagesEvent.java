@@ -1,5 +1,7 @@
 package edu.ucsd.cs.palmscom.client.event;
 
+import java.util.List;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.ucsd.cs.palmscom.client.ClientMessageDecorator;
@@ -8,10 +10,10 @@ import edu.ucsd.cs.palmscom.shared.Message;
 public class NewMessagesEvent extends GwtEvent<NewMessagesEventHandler> {
 	public static Type<NewMessagesEventHandler> TYPE = new Type<NewMessagesEventHandler>();
 	
-	private Message[] messages;
+	private List<ClientMessageDecorator> messages;
 	
-	public NewMessagesEvent(Message[] messages) {
-		this.messages = messages;
+	public NewMessagesEvent(List<ClientMessageDecorator> result) {
+		this.messages = result;
 	}
 	
 	@Override
@@ -24,7 +26,7 @@ public class NewMessagesEvent extends GwtEvent<NewMessagesEventHandler> {
 		handler.onNewMessages(this);
 	}
 
-	public Message[] getMessages() {
+	public List<ClientMessageDecorator> getMessages() {
 		return messages;
 	}
 }

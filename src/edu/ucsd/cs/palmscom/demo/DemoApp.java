@@ -26,6 +26,15 @@ public class DemoApp implements EntryPoint {
 		
 		Button login = new Button();
 		login.setText("Login to PALMSCom");
+
+		palms.setStylePrimaryName("palms");		
+		RootPanel.get().add(palms);
+		final FlowPanel loginPanel = new FlowPanel();
+		loginPanel.setStylePrimaryName("login");
+		palms.add(loginPanel);
+		loginPanel.add(userName);
+		loginPanel.add(fullName);
+		loginPanel.add(login);
 		
 		login.addClickHandler(new ClickHandler() {
 			
@@ -40,18 +49,12 @@ public class DemoApp implements EntryPoint {
 				// if admin
 				//user.setType(UserType.ADMIN);
 				
+				loginPanel.setVisible(false);
+				
 				Palmscom palmscom = new Palmscom(user, collapsPoint);
 			}
 		});
 		
-		palms.setStylePrimaryName("palms");		
-		RootPanel.get().add(palms);
-		FlowPanel loginPanel = new FlowPanel();
-		loginPanel.setStylePrimaryName("login");
-		palms.add(loginPanel);
-		loginPanel.add(userName);
-		loginPanel.add(fullName);
-		loginPanel.add(login);
 	}
 
 }

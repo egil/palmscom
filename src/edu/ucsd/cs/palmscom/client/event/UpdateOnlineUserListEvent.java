@@ -25,7 +25,7 @@ public class UpdateOnlineUserListEvent  extends GwtEvent<UpdateOnlineUserListEve
 		handler.onUpdateUserList(this);
 	}
 
-	public User[] getMessages() {
+	public User[] getUsers() {
 		return users;
 	}
 }

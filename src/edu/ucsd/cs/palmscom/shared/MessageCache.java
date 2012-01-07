@@ -1,7 +1,9 @@
 package edu.ucsd.cs.palmscom.shared;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 /*
@@ -24,18 +26,18 @@ public class MessageCache<M extends Message> {
 		messages.add(index, message);
 	}
 	
-	public void add(M[] messages) {
+	public void add(List<M> messages) {
 		for (M message : messages) {
 			add(message);
 		}
 	}
 	
-	public Message[] getTo(int limit) {
+	public List<M> getTo(int limit) {
 		limit = limit < messages.size() ? limit : messages.size();
-		Message[] result = new Message[limit];
+		ArrayList<M> result = new ArrayList<M>(limit);
 		
-		for (int i = 0; i < result.length; i++) {
-			result[i] = messages.get(i);
+		for (int i = 0; i < limit; i++) {
+			result.add(messages.get(i));
 		}
 		
 		return result;
@@ -45,7 +47,7 @@ public class MessageCache<M extends Message> {
 		return messages.getLast();
 	}
 	
-	public Message[] getFrom(Date from, int limit) {
+	public List<M> getFrom(Date from, int limit) {
 		// find first message that is older than "from"
 		int startIndex = 0;
 		for (; startIndex < messages.size(); startIndex++) {
@@ -53,19 +55,19 @@ public class MessageCache<M extends Message> {
 		}
 		
 		// if from was at the end of the message list, return an empty array
-		if(startIndex == messages.size()) return new Message[0];
+		if(startIndex == messages.size()) return new ArrayList<M>(0);
 		
 		// extract messages from list and return
 		limit = messages.size() - startIndex < limit ? messages.size() - startIndex : limit;
-		Message[] result = new Message[limit];
-		for (int i = 0; i < result.length; i++, startIndex++) {
-			result[i] = messages.get(startIndex);
+		List<M> result = new ArrayList<M>(limit);
+		for (int i = 0; i < limit; i++, startIndex++) {
+			result.add(messages.get(startIndex));
 		}
 
 		return result;
 	}
 
-	public Message[] getTo(Date to) {
+	public List<M> getTo(Date to) {
 		Stack<M> result = new Stack<M>();
 
 		for (M msg : messages) {
@@ -77,7 +79,7 @@ public class MessageCache<M extends Message> {
 			}
 		}
 	
-		return result.toArray(new Message[0]);
+		return result;
 	}
 	
 	public M getFirst() {

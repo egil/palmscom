@@ -12,6 +12,6 @@ public interface Message extends Serializable, Comparable<Message> {
 	public void setAuthor(User author);
 	public String getText();
 	public void setText(String text);
-	public Boolean getIsMessageOfIntrest();
-	public void setIsMessageOfIntrest(Boolean isMessageOfIntrest);
+	public Boolean isMessageOfIntrest();
+	public void isMessageOfIntrest(Boolean isMessageOfIntrest);
 }

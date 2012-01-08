@@ -51,13 +51,13 @@ public abstract class MessageDecorator extends MessageImpl implements Message {
 	}
 
 	@Override
-	public Boolean getIsMessageOfIntrest() {
-		return decoratedMessage.getIsMessageOfIntrest();
+	public Boolean isMessageOfIntrest() {
+		return decoratedMessage.isMessageOfIntrest();
 	}
 
 	@Override
-	public void setIsMessageOfIntrest(Boolean isMessageOfIntrest) {
-		decoratedMessage.setIsMessageOfIntrest(isMessageOfIntrest);
+	public void isMessageOfIntrest(Boolean isMessageOfIntrest) {
+		decoratedMessage.isMessageOfIntrest(isMessageOfIntrest);
 	}
 
 }

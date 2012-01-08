@@ -11,6 +11,7 @@ import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.MessageCache;
 import edu.ucsd.cs.palmscom.shared.PalmscomService;
 import edu.ucsd.cs.palmscom.shared.Settings;
+import edu.ucsd.cs.palmscom.shared.Settings.CollapsedType;
 import edu.ucsd.cs.palmscom.shared.User;
 
 public class InMemoryPollingServiceImpl extends RemoteServiceServlet implements PalmscomService {
@@ -77,7 +78,9 @@ public class InMemoryPollingServiceImpl extends RemoteServiceServlet implements 
 			users.put(user.getUsername(), user);
 		}
 		
-		return new Settings();
+		Settings s = new Settings();
+		s.setCollapsedType(CollapsedType.VERTICAL);
+		return s;
 	}
 
 	@Override

@@ -250,7 +250,7 @@ public class ExpandedView extends View implements ExpandedPresenter.Display {
 
 		// set id and optional classes
 		row.getElement().setAttribute("id", msg.getHtmlID());
-		if(msg.getIsMessageOfIntrest()) 
+		if(msg.isMessageOfIntrest()) 
 			row.addStyleName("moi");
 		if(msg.isOwnMessage())
 			row.addStyleName("own");
@@ -290,7 +290,7 @@ public class ExpandedView extends View implements ExpandedPresenter.Display {
 		messageStreamPanel.insert(row, 0);
 
 		if(isLive && !hasFocus && !msg.isOwnMessage()) {
-			blinkMessage(row.getElement(), msg.getIsMessageOfIntrest());
+			blinkMessage(row.getElement(), msg.isMessageOfIntrest());
 		}
 
 		return row;

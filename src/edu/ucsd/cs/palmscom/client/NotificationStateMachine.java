@@ -51,7 +51,7 @@ public class NotificationStateMachine {
 
 		// if it is a MoI, we always jump to 
 		// active notify state no matter the current sate
-		if(msg.getIsMessageOfIntrest()) {
+		if(msg.isMessageOfIntrest()) {
 			state = NotifyStateType.ACTIVE_NOTIFY;
 			eventBus.fireEvent(new NotifyStateEvent(state));
 			// restart activeNotifyTImer

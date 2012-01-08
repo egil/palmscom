@@ -31,11 +31,11 @@ public class ClientMessageDecorator extends MessageDecorator {
 	}
 	
 	@Override
-	public Boolean getIsMessageOfIntrest() {
+	public Boolean isMessageOfIntrest() {
 		if(!hasPreprocessed) {
 			Preprocessor.Execute(this);
 		}
-		return super.getIsMessageOfIntrest();
+		return super.isMessageOfIntrest();
 	}
 	
 	@Override 
@@ -69,20 +69,20 @@ public class ClientMessageDecorator extends MessageDecorator {
 			text = SafeHtmlUtils.htmlEscape(text);
 			
 			// set moi to false by default (otherwise it is null)
-			msg.setIsMessageOfIntrest(false);
+			msg.isMessageOfIntrest(false);
 
 			Settings settings = AppState.getInstance().getSettings();
 			
 			// only highlight message if it is from somebody else
 			if(!msg.isOwnMessage()) {
 				if(userMatcher.test(text)) {
-					msg.setIsMessageOfIntrest(true);
+					msg.isMessageOfIntrest(true);
 				}
 				userMatcher.setLastIndex(0);
 
 				if(settings.getKeywords().size() > 0) {
 					if(keywordMatcher.test(text)) {
-						msg.setIsMessageOfIntrest(true);
+						msg.isMessageOfIntrest(true);
 					}
 					keywordMatcher.setLastIndex(0);
 				}
@@ -96,7 +96,7 @@ public class ClientMessageDecorator extends MessageDecorator {
 				keywordMatcher.setLastIndex(0);
 			}
 			
-			GWT.log("personalizeMessage: " + (new Date().toString()) + " moi = " + msg.getIsMessageOfIntrest());
+			GWT.log("personalizeMessage: " + (new Date().toString()) + " moi = " + msg.isMessageOfIntrest());
 			
 			msg.setText(text);
 		}

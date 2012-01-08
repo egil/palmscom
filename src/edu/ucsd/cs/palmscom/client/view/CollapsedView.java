@@ -51,7 +51,7 @@ public class CollapsedView extends View implements CollapsedPresenter.Display {
 	}
 
 	@Override
-	public void addMessage(ClientMessageDecorator msg, boolean isVisible) {
+	public void addMessage(final ClientMessageDecorator msg, boolean isVisible) {
 		String timeauthor = "";
 
 		timeauthor += "<span class=\"time\">" + DateTimeFormat.getFormat("h:mm a").format(msg.getDate()) +
@@ -86,6 +86,7 @@ public class CollapsedView extends View implements CollapsedPresenter.Display {
 			message.clear();
 			message.add(text);			
 		}
+		message.setStyleName("own", msg.isOwnMessage());
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public class CollapsedView extends View implements CollapsedPresenter.Display {
 		GWT.log("transition: " + (new Date().toString()) + " - " + state.toString());
 		currentState = state;
 
-		message.setStyleDependentName("notify", currentState == NotifyStateType.PASSIVE_NOTIFY || currentState == NotifyStateType.ACTIVE_NOTIFY);
+		message.setStyleName("notify", currentState == NotifyStateType.PASSIVE_NOTIFY || currentState == NotifyStateType.ACTIVE_NOTIFY);
 
 		if(currentState != NotifyStateType.ACTIVE_NOTIFY && activeNotify.isLooped()) {
 			activeNotify.cancel();

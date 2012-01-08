@@ -51,12 +51,12 @@ public class MessageImpl implements Message {
 	}
 
 	@Override
-	public Boolean getIsMessageOfIntrest() {
+	public Boolean isMessageOfIntrest() {
 		return this.moi;
 	}
 
 	@Override
-	public void setIsMessageOfIntrest(Boolean isMessageOfIntrest) {	
+	public void isMessageOfIntrest(Boolean isMessageOfIntrest) {	
 		this.moi = isMessageOfIntrest;
 	}
 

@@ -31,6 +31,7 @@ public class ExpandedPresenter extends Presenter<ExpandedPresenter.Display> {
 		HasClickHandlers getToggleButton();
 		void updateOnlineUsersList(User[] onlineUsers);
 		HasClickHandlers getCreateMessageButton();
+		HasClickHandlers getHeaderArea();
 		Focusable getCreateMessageArea();
 		HasText getCreateMessageText();
 		void lockCreateMessageInput();
@@ -49,6 +50,12 @@ public class ExpandedPresenter extends Presenter<ExpandedPresenter.Display> {
 				eventBus.fireEvent(new ToggleButtonClickedEvent());
 			}
 		});
+		view.getHeaderArea().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				eventBus.fireEvent(new ToggleButtonClickedEvent());
+			}
+		});
 		eventBus.addHandler(UpdateOnlineUserListEvent.TYPE, new UpdateOnlineUserListEventHandler() {
 			@Override
 			public void onUpdateUserList(UpdateOnlineUserListEvent event) {
@@ -59,8 +66,10 @@ public class ExpandedPresenter extends Presenter<ExpandedPresenter.Display> {
 			@Override
 			public void onNewMessages(NewMessagesEvent event) {
 				List<ClientMessageDecorator> msgs = event.getMessages();
-				for(ClientMessageDecorator msg : msgs) {
-					addMessage(msg, true);
+				// iterate from last to first, since the newest message is at
+				// the first position in the array
+				for (int i = msgs.size()-1; i >= 0; i--) {
+					addMessage(msgs.get(i), true);
 				}
 			}
 		});
@@ -136,9 +145,11 @@ public class ExpandedPresenter extends Presenter<ExpandedPresenter.Display> {
 		
 		service.getMessages(20, new SimpleAsyncCallback<List<ClientMessageDecorator>>() {
 			@Override
-			public void onSuccess(List<ClientMessageDecorator> result) {
-				for(ClientMessageDecorator msg : result) {
-					addMessage(msg, false);
+			public void onSuccess(List<ClientMessageDecorator> result) {	
+				// iterate from last to first, since the newest message is at
+				// the first position in the array
+				for (int i = result.size()-1; i >= 0; i--) {
+					addMessage(result.get(i), false);
 				}
 			}
 		});

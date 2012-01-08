@@ -2,9 +2,12 @@ package edu.ucsd.cs.palmscom.shared;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
+
+import com.google.gwt.core.client.GWT;
 
 /*
  * Wrap message cache fields and methods
@@ -15,8 +18,13 @@ public class MessageCache<M extends Message> {
 	 * Newest messages are stored at the front of the list. 
 	 */
 	private final LinkedList<M> messages = new LinkedList<M>();
+	private final HashSet<Integer> existsLookup = new HashSet<Integer>(); 
 	
-	public void add(M message) {		
+	public void add(M message) {
+		if(existsLookup.contains(message.getID())) {
+			GWT.log("Message already exists: " + message.getID());
+			return;
+		}
 		// find first message that is older than msg
 		int index = 0;
 		for (; index < messages.size(); index++) {
@@ -24,12 +32,15 @@ public class MessageCache<M extends Message> {
 				break;
 		}
 		messages.add(index, message);
+		existsLookup.add(message.getID());
 	}
 	
 	public void add(List<M> messages) {
-		for (M message : messages) {
-			add(message);
-		}
+		// iterate from last to first, since the newest message 
+		// is usually first and the oldest is last in the list
+		for (int i = messages.size()-1; i >= 0; i--) {
+			add(messages.get(i));
+		}	
 	}
 	
 	public List<M> getTo(int limit) {

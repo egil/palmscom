@@ -42,7 +42,7 @@ public class ExpandedView extends View implements ExpandedPresenter.Display {
 	private final DockLayoutPanel layout = new DockLayoutPanel(Unit.PX);
 	
 	// header panel
-	private final FlowPanel headerPanel = new FlowPanel();
+	private final ClickFlowPanel headerPanel = new ClickFlowPanel();
 	private final HTML headerToggler = new HTML();
 	private final HTML headerText =  new HTML("PALMSCom");
 
@@ -75,15 +75,49 @@ public class ExpandedView extends View implements ExpandedPresenter.Display {
 		layout.add(messageStreamScrollPanel);
 		
 		// configure and setup
-		headerPanel.setStylePrimaryName("header");
-		headerToggler.setStylePrimaryName("toggler");
-		headerText.setStylePrimaryName("message");
-		headerPanel.add(headerToggler);
-		headerPanel.add(headerText);
+		initHeader();
 		
 		// create message
+		initCreateMessage();
+		
+		// message stream
+		initMessageStream();		
+		
+		// online users list
+		initOnlineUsersList();
+	}
+
+	private void initOnlineUsersList() {
+		onlineUsersContainerPanel.setStylePrimaryName("online-users");
+		onlineUsersContainerPanel.add(onlineUsersPanel);
+		onlineUsersPanel.add(onlineUsersSummary);
+		onlineUsersPanel.add(onlineUsersList);
+		onlineUsersList.setVisible(false); // default is hidden
+		// the click handler should ideally be in the presenter,
+		// but since this has no side effects on the rest of the view
+		// it seems more clean to keep it here.
+		onlineUsersContainerPanel.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				onlineUsersSummary.setVisible(!onlineUsersSummary.isVisible());
+				onlineUsersList.setVisible(!onlineUsersList.isVisible());
+
+				if(onlineUsersSummary.isVisible())
+					layout.setWidgetSize(onlineUsersContainerPanel, ONLINE_USERS_COLLAPSED_SIZE);
+				else
+					layout.setWidgetSize(onlineUsersContainerPanel, onlineUsersCount * 10 + ONLINE_USERS_COLLAPSED_SIZE);
+			}
+		});
+	}
+
+	private void initMessageStream() {
+		messageStreamScrollPanel.add(messageStreamPanel);
+		messageStreamScrollPanel.setStyleName("stream");
+	}
+
+	private void initCreateMessage() {
 		createMessagePanel.setStylePrimaryName("create-message");
-		createMessageText.setWatermark("Click here to ask a question . . .");
+		createMessageText.setWatermark("Write a new message . . .");
 		createMessageButton.setVisible(false);
 		createMessagePanel.add(createMessageText);
 		createMessagePanel.add(createMessageButton);
@@ -119,33 +153,14 @@ public class ExpandedView extends View implements ExpandedPresenter.Display {
 				}
 			}
 		});
-		
-		// message stream
-		messageStreamScrollPanel.add(messageStreamPanel);
-		messageStreamScrollPanel.setStyleName("stream");		
-		
-		// online users list
-		onlineUsersContainerPanel.setStylePrimaryName("online-users");
-		onlineUsersContainerPanel.add(onlineUsersPanel);
-		onlineUsersPanel.add(onlineUsersSummary);
-		onlineUsersPanel.add(onlineUsersList);
-		onlineUsersList.setVisible(false); // default is hidden
-		// the click handler should ideally be in the presenter,
-		// but since this has no side effects on the rest of the view
-		// it seems more clean to keep it here.
-		onlineUsersContainerPanel.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				onlineUsersSummary.setVisible(!onlineUsersSummary.isVisible());
-				onlineUsersList.setVisible(!onlineUsersList.isVisible());
+	}
 
-				if(onlineUsersSummary.isVisible())
-					layout.setWidgetSize(onlineUsersContainerPanel, ONLINE_USERS_COLLAPSED_SIZE);
-				else
-					layout.setWidgetSize(onlineUsersContainerPanel, onlineUsersCount * 10 + ONLINE_USERS_COLLAPSED_SIZE);
-			}
-		});
-
+	private void initHeader() {
+		headerPanel.setStylePrimaryName("header");
+		headerToggler.setStylePrimaryName("toggler");
+		headerText.setStylePrimaryName("message");
+		headerPanel.add(headerToggler);
+		headerPanel.add(headerText);
 	}
 
 	@Override
@@ -303,5 +318,10 @@ public class ExpandedView extends View implements ExpandedPresenter.Display {
 	@Override
 	public Focusable getCreateMessageArea() {
 		return createMessageText;
+	}
+
+	@Override
+	public HasClickHandlers getHeaderArea() {
+		return headerPanel;
 	}
 }

@@ -7,9 +7,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
 
-import edu.ucsd.cs.palmscom.client.AppState;
 import edu.ucsd.cs.palmscom.client.ClientMessageDecorator;
 import edu.ucsd.cs.palmscom.client.NotificationStateMachine;
 import edu.ucsd.cs.palmscom.client.NotifyStateType;
@@ -20,10 +18,6 @@ import edu.ucsd.cs.palmscom.client.event.NewMessagesEventHandler;
 import edu.ucsd.cs.palmscom.client.event.NotifyStateEvent;
 import edu.ucsd.cs.palmscom.client.event.NotifyStateHandler;
 import edu.ucsd.cs.palmscom.client.event.ToggleButtonClickedEvent;
-import edu.ucsd.cs.palmscom.client.presenter.ExpandedPresenter.Display;
-import edu.ucsd.cs.palmscom.client.view.CollapsedView;
-import edu.ucsd.cs.palmscom.shared.PalmscomServiceAsync;
-import edu.ucsd.cs.palmscom.widgets.CollapsiblePanel.CollapseState;
 
 public class CollapsedPresenter extends Presenter<CollapsedPresenter.Display> {
 	

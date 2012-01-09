@@ -1,9 +1,7 @@
 package edu.ucsd.cs.palmscom.client.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.event.shared.GwtEvent.Type;
 
-import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.User;
 
 public class UpdateOnlineUserListEvent  extends GwtEvent<UpdateOnlineUserListEventHandler> {

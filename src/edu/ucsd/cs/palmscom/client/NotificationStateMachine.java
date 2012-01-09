@@ -6,7 +6,6 @@ import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Timer;
 
 import edu.ucsd.cs.palmscom.client.event.NotifyStateEvent;
-import edu.ucsd.cs.palmscom.client.event.NotifyStateHandler;
 import edu.ucsd.cs.palmscom.shared.Message;
 
 public class NotificationStateMachine {

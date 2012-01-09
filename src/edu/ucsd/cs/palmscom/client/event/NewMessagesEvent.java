@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.gwt.event.shared.GwtEvent;
 
 import edu.ucsd.cs.palmscom.client.ClientMessageDecorator;
-import edu.ucsd.cs.palmscom.shared.Message;
 
 public class NewMessagesEvent extends GwtEvent<NewMessagesEventHandler> {
 	public static Type<NewMessagesEventHandler> TYPE = new Type<NewMessagesEventHandler>();

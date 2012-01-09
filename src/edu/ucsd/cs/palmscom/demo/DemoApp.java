@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.RootPanel;
 
 import edu.ucsd.cs.palmscom.client.Palmscom;
 import edu.ucsd.cs.palmscom.shared.User;
-import edu.ucsd.cs.palmscom.shared.User.UserType;
 import edu.ucsd.cs.palmscom.widgets.WatermarkTextBox;
 
 public class DemoApp implements EntryPoint {
@@ -51,7 +50,7 @@ public class DemoApp implements EntryPoint {
 				
 				loginPanel.setVisible(false);
 				
-				Palmscom palmscom = new Palmscom(user, collapsPoint);
+				new Palmscom(user, collapsPoint);
 			}
 		});
 		

@@ -2,11 +2,8 @@ package edu.ucsd.cs.palmscom.client.presenter;
 
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
 
 import edu.ucsd.cs.palmscom.client.ServiceProxy;
-import edu.ucsd.cs.palmscom.client.presenter.Display;
-import edu.ucsd.cs.palmscom.client.view.View;
 
 public abstract class Presenter<T extends edu.ucsd.cs.palmscom.client.presenter.Display> {
 

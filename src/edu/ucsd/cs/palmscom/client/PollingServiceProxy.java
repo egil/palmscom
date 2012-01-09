@@ -9,7 +9,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import edu.ucsd.cs.palmscom.client.event.NewMessagesEvent;
 import edu.ucsd.cs.palmscom.client.event.UpdateOnlineUserListEvent;
-import edu.ucsd.cs.palmscom.shared.Message;
 import edu.ucsd.cs.palmscom.shared.User;
 
 public class PollingServiceProxy extends ServiceProxy {

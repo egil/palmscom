@@ -57,18 +57,6 @@ public class InMemoryPollingServiceImpl extends RemoteServiceServlet implements 
 		return users.values().toArray(new User[0]);
 	}
 
-//	@Override
-//	public Settings getUserSettings() {
-//		Settings s = new Settings();
-//		s.setCurrentUser(getSessionUser());
-//		return s;
-//	}
-//
-//	@Override
-//	public void updateUserSettings(Settings settings) {
-//		// TODO Auto-generated method stub
-//	}
-
 	@Override
 	public Settings signIn(User user) {
 		HttpSession session = getThreadLocalRequest().getSession(true);
